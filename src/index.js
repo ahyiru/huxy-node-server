@@ -88,7 +88,7 @@ var c = (t, o) =>
     U({
       name: t,
       level: f.logLevel,
-      transport: {target: 'pino-pretty', options: {colorize: !0}, ignore: 'pid,hostname,level,time', translateTime: 'UTC:yyyy-mm-dd HH:MM:ss', customColors: 'err:red,info:blue'},
+      transport: {target: 'pino-pretty', options: {colorize: !0, sync: !0}, ignore: 'pid,hostname,level,time', translateTime: 'UTC:yyyy-mm-dd HH:MM:ss', customColors: 'err:red,info:blue'},
       ...o,
     }),
   P = () => {
