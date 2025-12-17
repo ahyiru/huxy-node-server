@@ -178,8 +178,6 @@ node server.js port=3000 host=localhost
 │   ├── utils.js            # 工具函数
 │   ├── staticServer.js     # 静态文件服务器
 │   └── resolvePath.js      # 路径解析工具
-├── src/
-│   └── index.js            # 编译后的代码
 ├── example.js             # 使用示例
 └── package.json
 ```
