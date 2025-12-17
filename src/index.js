@@ -5,7 +5,7 @@ import {rateLimit as K, ipKeyGenerator as W} from 'express-rate-limit';
 import z from 'compression';
 import X from 'pino-http';
 import {createServer as B} from 'node:http';
-import U from 'pino';
+import k from 'pino';
 import w from 'node:os';
 import D from 'node:net';
 var m = (t = new Date()) => t.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
@@ -47,7 +47,7 @@ var m = (t = new Date()) => t.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
   u = (t = {}, o = H) => {
     let {env: e} = process;
     Object.keys(o).map(n => {
-      let s = e[n];
+      let s = e[n] ?? t[n];
       s && M(o[n], s, t);
     });
     let r = {...t, ...x()};
@@ -65,7 +65,7 @@ var m = (t = new Date()) => t.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
         r.listen(Number(t), o));
     });
 import 'dotenv';
-var k = {
+var U = {
     nodeEnv: 'production',
     isDev: !1,
     port: parseInt(process.env.PORT || '3000', 10),
@@ -83,9 +83,9 @@ var k = {
     },
     logLevel: process.env.LOG_LEVEL || 30,
   },
-  f = k;
+  f = U;
 var c = (t, o) =>
-    U({
+    k({
       name: t,
       level: f.logLevel,
       transport: {target: 'pino-pretty', options: {colorize: !0, sync: !0}, ignore: 'pid,hostname,level,time', translateTime: 'UTC:yyyy-mm-dd HH:MM:ss', customColors: 'err:red,info:blue'},
