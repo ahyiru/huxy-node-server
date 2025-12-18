@@ -13,15 +13,15 @@ var m = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
     let r = e ? 'https' : 'http',
       t = M.networkInterfaces(),
       o = [];
-    return (Object.keys(t).map(n => o.push(...t[n])), o.filter(n => n.family === 'IPv4').map(n => `${r}://${n.address}`));
+    return (Object.keys(t).map(i => o.push(...t[i])), o.filter(i => i.family === 'IPv4').map(i => `${r}://${i.address}`));
   },
   x = e => {
     let r = e ?? process.argv.slice(2) ?? [],
       t = {};
     return (
       r.map(o => {
-        let [s, i] = o.split('=');
-        t[s] = i;
+        let [s, n] = o.split('=');
+        t[s] = n;
       }),
       t
     );
@@ -47,8 +47,8 @@ var m = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
   d = (e = {}, r = k) => {
     let {env: t} = process;
     Object.keys(r).map(s => {
-      let i = t[s] ?? e[s];
-      i && U(r[s], i, e);
+      let n = t[s] ?? e[s];
+      n && U(r[s], n, e);
     });
     let o = {...e, ...x()};
     return ((o.port = o.staticPort || o.port), (o.isDev = o.NODE_ENV === 'development'), o);
@@ -64,7 +64,7 @@ var m = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
         }),
         o.listen(Number(e), r));
     }),
-  I = (e, r = {}) => {
+  y = (e, r = {}) => {
     let t = o => {
       (a.warn(`\u6536\u5230 ${o} \u4FE1\u53F7, \u{1F6D1} \u6B63\u5728\u5173\u95ED\u670D\u52A1\u5668...`),
         e.close(async () => {
@@ -83,18 +83,18 @@ var m = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
         (a.fatal({reason: o, promise: s}, '\u26A0\uFE0F \u672A\u5904\u7406\u7684 Promise \u62D2\u7EDD'), process.exit(1));
       }));
   },
-  y = (e, {port: r, host: t = '0.0.0.0'} = {}) =>
+  I = (e, {port: r, host: t = '0.0.0.0'} = {}) =>
     new Promise((o, s) => {
-      let i = l => {
+      let n = l => {
           (c(), s(l));
         },
-        n = () => {
+        i = () => {
           (c(), o(e));
         },
         c = () => {
-          (e.off('error', i), e.off('listening', n));
+          (e.off('error', n), e.off('listening', i));
         };
-      (e.once('error', i), e.once('listening', n), e.listen(r, t));
+      (e.once('error', n), e.once('listening', i), e.listen(r, t));
     });
 import 'dotenv';
 var G = {
@@ -134,10 +134,10 @@ var w = p('error-handler'),
       t.status(404).json({success: !1, timestamp: m(), status: 404, message: `\u8DEF\u7531 ${r.method} ${r.originalUrl} \u4E0D\u5B58\u5728`, url: r.originalUrl}));
   },
   b = e => (r, t, o, s) => {
-    let i = r.status || 500,
-      n = r.message;
-    (w.error({message: n, timestamp: m(), stack: r.stack, url: t.originalUrl, method: t.method, ip: t.ip, userAgent: t.get('User-Agent')}, '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF'),
-      o.status(i).json({success: !1, timestamp: m(), message: e.isDev ? n : '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF', stack: e.isDev ? r.stack : void 0}));
+    let n = r.status || 500,
+      i = r.message;
+    (w.error({message: i, timestamp: m(), stack: r.stack, url: t.originalUrl, method: t.method, ip: t.ip, userAgent: t.get('User-Agent')}, '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF'),
+      o.status(n).json({success: !1, timestamp: m(), message: e.isDev ? i : '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF', stack: e.isDev ? r.stack : void 0}));
   };
 var R = e => (r, t, o) => {
   (t.set('Cache-Control', `public, max-age=${e.cacheMaxAge ?? 300}, stale-while-revalidate=60`), o());
@@ -175,16 +175,21 @@ var J = (e, r = {}) => {
     let t = d(e),
       {port: o} = t;
     (await f(o, t.host)) || ((t.port = Number(o) + 1), a.warn(`\u7AEF\u53E3 ${o} \u5DF2\u88AB\u5360\u7528\uFF0C\u73B0\u5728\u4F7F\u7528\u7AEF\u53E3 ${t.port}`));
-    let i = E();
-    J(i, t);
-    let n = Q(i);
-    I(n, t);
+    let n = E();
+    J(n, t);
+    let i = Q(n);
+    y(i, t);
     try {
-      await y(n, t);
-    } catch {
-      (a.error('\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25'), process.exit(1));
+      await I(i, t);
+    } catch (c) {
+      (a.error({err: c}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25'), process.exit(1));
     }
-    return (await r?.(t, i, n), Y(i, t), {app: i, httpServer: n, config: t});
+    try {
+      await r?.(t, n, i);
+    } catch (c) {
+      (a.error({err: c}, `\u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${c.message}`), process.exit(1));
+    }
+    return (Y(n, t), {app: n, httpServer: i, config: t});
   },
   _ = Z;
 var q = (e, r = 56) => {
@@ -194,18 +199,18 @@ var q = (e, r = 56) => {
     return `${'-'.repeat(s)}${e}${'-'.repeat(o - s)}`;
   },
   ee = (e, r, t) =>
-    _({...g, ...e}, async (o, s, i) => {
-      let {port: n, host: c, nodeEnv: l, basepath: P, appName: D = 'HuxyServer'} = o;
+    _({...g, ...e}, async (o, s, n) => {
+      let {port: i, host: c, nodeEnv: l, basepath: P, appName: D = 'HuxyServer'} = o;
       if (!t) {
         let H = u()
           .filter(v => v !== `http://${c}`)
-          .map(v => `http://${v}:${n}${P}`);
+          .map(v => `http://${v}:${i}${P}`);
         (a.info(q(D)),
-          a.info(`\u{1F680} \u670D\u52A1\u8FD0\u884C\u5728\u3010${l}\u3011\u73AF\u5883: http://${c}:${n}${P}`),
+          a.info(`\u{1F680} \u670D\u52A1\u8FD0\u884C\u5728\u3010${l}\u3011\u73AF\u5883: http://${c}:${i}${P}`),
           a.info(`-----------------[${m()}]------------------`),
           a.info({ips: H}, '\u672C\u5730\u5730\u5740\uFF1A'));
       }
-      await r?.(o, s, i);
+      await r?.(o, s, n);
     }),
   h = ee;
 import se from 'express';
@@ -214,13 +219,14 @@ import {dirname as oe, resolve as re} from 'node:path';
 var T = (e = import.meta.url) => oe(te(e)),
   S = e => re(T(), e),
   $ = S;
-var ne = {port: 9e3, host: 'localhost', basepath: '/', buildPath: './build'},
-  ie = (e, r) =>
-    h({...ne, ...e}, async (t, o, s) => {
-      let {basepath: i, buildPath: n} = t;
+var ie = {port: 9e3, host: 'localhost', basepath: '/', buildPath: './build'},
+  ne = (e, r) =>
+    h({...ie, ...e}, async (t, o, s) => {
+      await r?.(t, o, s);
+      let {basepath: n, buildPath: i} = t;
       (o.use(
-        i,
-        se.static(n, {
+        n,
+        se.static(i, {
           maxAge: '1y',
           immutable: !0,
           setHeaders: (c, l) => {
@@ -228,12 +234,11 @@ var ne = {port: 9e3, host: 'localhost', basepath: '/', buildPath: './build'},
           },
         }),
       ),
-        o.get(`${i}/{*splat}`.replace('//', '/'), (c, l) => {
-          l.sendFile($(n, 'index.html'));
-        }),
-        await r?.(t, o, s));
+        o.get(`${n}/{*splat}`.replace('//', '/'), (c, l) => {
+          l.sendFile($(i, 'index.html'));
+        }));
     }),
-  O = ie;
+  O = ne;
 var tt = {startServer: h, startStatic: O, logger: a, createLogger: p, dateTime: m, localIPs: u, nodeArgs: x, getEnvConfig: d, checkPort: f, getDirName: T, resolvePath: S};
 export {
   f as checkPort,
