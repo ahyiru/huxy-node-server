@@ -88,6 +88,7 @@ const server = await startStatic({
 | `port` | number | 3000 | 服务器端口 |
 | `host` | string | '0.0.0.0' | 服务器主机 |
 | `basepath` | string | '/' | 基础路径前缀 |
+| `apiPrefix` | string | '/api' | 基础路径前缀 |
 | `nodeEnv` | string | 'development' | 运行环境 |
 | `appName` | string | 'HuxyServer' | 应用名称 |
 
@@ -151,7 +152,8 @@ const server = await startStatic({
 NODE_ENV=production
 PORT=3000
 HOST=0.0.0.0
-BASEPATH=/api
+BASEPATH=/
+API_PREFIX=/api
 CORS_ORIGIN=http://example.com,http://localhost:3000
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
