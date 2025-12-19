@@ -88,7 +88,7 @@ const server = await startStatic({
 | `port` | number | 3000 | 服务器端口 |
 | `host` | string | '0.0.0.0' | 服务器主机 |
 | `basepath` | string | '/' | 基础路径前缀 |
-| `apiPrefix` | string | '/api' | 基础路径前缀 |
+| `apiPrefix` | string | '/api' | API前缀 |
 | `nodeEnv` | string | 'development' | 运行环境 |
 | `appName` | string | 'HuxyServer' | 应用名称 |
 

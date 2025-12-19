@@ -12,7 +12,7 @@ const {app, config, httpServer} = await startServer({
   port: 8080,
   host: 'localhost',
   // ...
-}, (config, app, httpServer) => {
+}, (config, app, httpServer, logger) => {
   app.get('/config', (req, res) => {
     logger.info('详细配置：', config);
     res.status(200).json({ 
