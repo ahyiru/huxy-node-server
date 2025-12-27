@@ -56,13 +56,27 @@ import { startServer } from 'huxy-node-server';
 const { app, config, httpServer } = await startServer({
   port: 3000,
   host: '0.0.0.0',
-  basepath: '/api',
+  basepath: '/webui',
   // 其他配置...
 }, (config, app, httpServer) => {
   // 可以在这里添加自定义路由
   app.get('/hello', (req, res) => {
     res.json({ message: 'Hello World!' });
   });
+});
+```
+
+### 启用 SSL
+
+```javascript
+const options = {
+  key: '/path/to/name.key',
+  cert: '/path/to/name.pem',
+};
+startServer({
+  port: 3000,
+  host: '0.0.0.0',
+  ssl: options,
 });
 ```
 
