@@ -14,10 +14,15 @@ const {app, config, httpServer} = await startServer({
   // ...
 }, (config, app, httpServer, logger) => {
   app.get('/config', (req, res) => {
-    logger.info('详细配置：', config);
+    logger.info(config, '详细配置：');
     res.status(200).json({ 
       result: config,
     });
+  });
+  app.use('/', (req, res) => {
+    logger.info({url: req.url}, 'url');
+    // logger.info(req.headers, 'headers');
+    // logger.info(req.body, 'body');
   });
 });
 
@@ -26,6 +31,10 @@ const huxyServer = await startStatic({
   port: 9000,
   basepath: '/',
   buildPath: './build',
+  // ssl: {
+  //   key: '/path/to/name.key',
+  //   cert: '/path/to/name.pem',
+  // },
 }, (config, app) => {
   logger.info(config);
 });

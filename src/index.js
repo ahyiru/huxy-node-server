@@ -112,7 +112,7 @@ var K = {
     port: parseInt(process.env.PORT || '3000', 10),
     host: process.env.HOST || '0.0.0.0',
     basepath: process.env.BASEPATH || '/',
-    apiPrefix: '/api',
+    apiPrefix: '/',
     cors: {origin: process.env.CORS_ORIGIN?.split(',') || '*', credentials: !0},
     rateLimit: {
       windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '300000', 10),
