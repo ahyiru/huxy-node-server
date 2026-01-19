@@ -4,7 +4,7 @@ import X from 'cors';
 import {rateLimit as Q, ipKeyGenerator as J} from 'express-rate-limit';
 import Y from 'compression';
 import Z from 'pino-http';
-import {createServer as M} from 'node:http';
+import {createServer as D} from 'node:http';
 import q from 'node:https';
 import b from 'pino';
 import j from 'node:os';
@@ -28,7 +28,7 @@ var c = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
       t
     );
   },
-  V = {
+  F = {
     NODE_ENV: 'nodeEnv',
     PORT: 'port',
     STATIC_PORT: 'staticPort',
@@ -42,18 +42,18 @@ var c = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
     JWT_SECRET: 'secret',
     AUTH_TOKEN: 'authToken',
   },
-  F = (e, o, t) => {
+  V = (e, o, t) => {
     let [r, s] = e.split('.');
     r && s ? (t[r] || (t[r] = {}), (t[r][s] = o)) : (t[r] = o);
   },
-  v = (e = {}, o = V) => {
+  v = (e = {}, o = F) => {
     let {env: t} = process;
     Object.keys(o).map(s => {
       let i = t[s] ?? e[s];
-      i && F(o[s], i, e);
+      i && V(o[s], i, e);
     });
     let r = {...e, ...y()};
-    return ((r.port = r.staticPort || r.port), (r.isDev = r.NODE_ENV === 'development'), (r.protocol = 'http'), r);
+    return ((r.port = r.staticPort || r.port), (r.isDev = r.nodeEnv === 'development'), (r.protocol = 'http'), r);
   },
   x = (e, o = '127.0.0.1') =>
     new Promise(t => {
@@ -137,11 +137,11 @@ var f = (e, o) =>
   });
 var p = f('huxy');
 var O = f('error-handler'),
-  N = e => (o, t, r) => {
+  _ = e => (o, t, r) => {
     (O.error({message: 'Not Found', timestamp: c(), url: o.originalUrl, method: o.method, ip: o.ip, userAgent: o.get('User-Agent')}, '\u627E\u4E0D\u5230\u8DEF\u5F84'),
       t.status(404).json({success: !1, status: 404, url: o.originalUrl, message: `\u8DEF\u7531 [${o.method} ${o.originalUrl}] \u4E0D\u5B58\u5728`, timestamp: c()}));
   },
-  _ = e => (o, t, r, s) => {
+  N = e => (o, t, r, s) => {
     let i = o.status || 500,
       n = o.message;
     (O.error({message: n, timestamp: c(), stack: o.stack, url: t.originalUrl, method: t.method, ip: t.ip, userAgent: t.get('User-Agent')}, '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF'),
@@ -160,7 +160,7 @@ var z = e => {
       o
     );
   },
-  D = z;
+  M = z;
 var ee = (e, o = {}) => {
     (e.disable('x-powered-by'),
       e.set('trust proxy', o.trustProxy ?? 1),
@@ -173,7 +173,7 @@ var ee = (e, o = {}) => {
       e.use(P.urlencoded({extended: !0, limit: '20mb'})));
   },
   te = (e, o = {}) => {
-    (e.use(D(o)), e.use(N(o)), e.use(_(o)));
+    (e.use(M(o)), e.use(_(o)), e.use(N(o)));
   },
   oe = async (e, o) => {
     let t = v(e),
@@ -187,10 +187,10 @@ var ee = (e, o = {}) => {
           (p.error({ssl: {key: '/path/to/name.key', cert: '/path/to/name.pem'}}, '\u26A0\uFE0F \u8BF7\u8BBE\u7F6E\u6709\u6548 SSL \u6216\u8BBE\u7F6E {ssl: false}'), process.exit(1)),
         (t.protocol = 'https'),
         (a = q.createServer(s, n)),
-        M((d, l) => {
+        D((d, l) => {
           (l.writeHead(301, {Location: `${t.protocol}://${d.headers.host}${d.url}`}), l.end());
         }).listen(80))
-      : (a = M(n)),
+      : (a = D(n)),
       A(a, t, p));
     try {
       await $(a, t);
