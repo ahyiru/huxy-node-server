@@ -1,16 +1,15 @@
-import {startServer, startStatic, logger, createLogger, dateTime} from './src/index.js';
+import {startServer, startStatic, createLogger, dateTime} from './src/index.js';
 
-logger.info(dateTime());
+const testLogger = await createLogger()('test');
 
-const testLogger = createLogger('test');
-
-testLogger.info({x: 123}, '测试');
-logger.error({status: 400}, 'HTTP请求错误');
+testLogger.info({x: 123}, dateTime());
+testLogger.error({status: 400}, '测试');
 
 // startServer
 const {app, config, httpServer} = await startServer({
   port: 8080,
   host: 'localhost',
+  appName: '测试Demo',
   // ...
 }, (config, app, httpServer, logger) => {
   app.get('/config', (req, res) => {
@@ -31,11 +30,12 @@ const huxyServer = await startStatic({
   port: 9000,
   basepath: '/',
   buildPath: './build',
+  logger: console,
   // ssl: {
   //   key: '/path/to/name.key',
   //   cert: '/path/to/name.pem',
   // },
-}, (config, app) => {
+}, (config, app, httpServer, logger) => {
   logger.info(config);
 });
 

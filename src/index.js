@@ -1,34 +1,32 @@
-import L from 'express';
-import B from 'helmet';
-import X from 'cors';
-import {rateLimit as Q, ipKeyGenerator as J} from 'express-rate-limit';
-import Y from 'compression';
-import Z from 'pino-http';
-import {createServer as C} from 'node:http';
-import q from 'node:https';
-import b from 'pino';
-import j from 'node:os';
-import G from 'node:net';
-var c = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
-  w = e => Object.prototype.toString.call(e).slice(8, -1).toLowerCase(),
-  g = e => {
-    let r = e ? 'https' : 'http',
-      o = j.networkInterfaces(),
-      t = [];
-    return (Object.keys(o).map(n => t.push(...o[n])), t.filter(n => n.family === 'IPv4').map(n => n.address));
+import y from 'express';
+import K from 'helmet';
+import z from 'cors';
+import {rateLimit as B, ipKeyGenerator as X} from 'express-rate-limit';
+import Q from 'compression';
+import {createServer as N} from 'node:http';
+import J from 'node:https';
+import U from 'node:os';
+import j from 'node:net';
+var c = (t = new Date()) => t.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
+  L = t => Object.prototype.toString.call(t).slice(8, -1).toLowerCase(),
+  f = t => {
+    let o = t ? 'https' : 'http',
+      s = U.networkInterfaces(),
+      e = [];
+    return (Object.keys(s).map(n => e.push(...s[n])), e.filter(n => n.family === 'IPv4').map(n => n.address));
   },
-  y = e => {
-    let r = e ?? process.argv.slice(2) ?? [],
-      o = {};
+  T = t => {
+    let o = t ?? process.argv.slice(2) ?? [],
+      s = {};
     return (
-      r.map(t => {
-        let [s, n] = t.split('=');
-        o[s] = n;
+      o.map(e => {
+        let [r, n] = e.split('=');
+        s[r] = n;
       }),
-      o
+      s
     );
   },
-  F = {
+  G = {
     NODE_ENV: 'nodeEnv',
     PORT: 'port',
     STATIC_PORT: 'staticPort',
@@ -42,70 +40,161 @@ var c = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
     JWT_SECRET: 'secret',
     AUTH_TOKEN: 'authToken',
   },
-  V = (e, r, o) => {
-    let [t, s] = e.split('.');
-    t && s ? (o[t] || (o[t] = {}), (o[t][s] = r)) : (o[t] = r);
+  F = (t, o, s) => {
+    let [e, r] = t.split('.');
+    e && r ? (s[e] || (s[e] = {}), (s[e][r] = o)) : (s[e] = o);
   },
-  v = (e = {}, r = F) => {
-    let {env: o} = process;
-    Object.keys(r).map(s => {
-      let n = o[s] ?? e[s];
-      n && V(r[s], n, e);
+  g = (t = {}, o = G) => {
+    let {env: s} = process;
+    Object.keys(o).map(r => {
+      let n = s[r] ?? t[r];
+      n && F(o[r], n, t);
     });
-    let t = {...e, ...y()};
-    return ((t.port = t.staticPort || t.port), (t.isDev = t.nodeEnv === 'development'), (t.protocol = 'http'), t);
+    let e = {...t, ...T()};
+    return ((e.port = e.staticPort || e.port), (e.isDev = e.nodeEnv === 'development'), (e.protocol = 'http'), e);
   },
-  x = (e, r = '127.0.0.1') =>
-    new Promise(o => {
-      let t = G.createServer();
-      (t.once('error', s => {
-        (t.close(), o((s.code === 'EADDRINUSE', !1)));
+  h = (t, o = '127.0.0.1') =>
+    new Promise(s => {
+      let e = j.createServer();
+      (e.once('error', r => {
+        (e.close(), s((r.code === 'EADDRINUSE', !1)));
       }),
-        t.once('listening', () => {
-          (t.close(), o(!0));
+        e.once('listening', () => {
+          (e.close(), s(!0));
         }),
-        t.listen(Number(e), r));
+        e.listen(Number(t), o));
     }),
-  A = (e, r = {}, o) => {
-    let t = s => {
-      (o.warn(`\u6536\u5230 ${s} \u4FE1\u53F7, \u{1F6D1} \u6B63\u5728\u5173\u95ED\u670D\u52A1\u5668...`),
-        e.close(async () => {
-          (o.info('\u{1F44B} \u670D\u52A1\u5668\u5DF2\u5173\u95ED'), await r.shutdown?.(), process.exit(0));
+  I = (t, o = {}, s) => {
+    let e = r => {
+      (s.warn(`\u6536\u5230 ${r} \u4FE1\u53F7, \u{1F6D1} \u6B63\u5728\u5173\u95ED\u670D\u52A1\u5668...`),
+        t.close(async () => {
+          (s.info('\u{1F44B} \u670D\u52A1\u5668\u5DF2\u5173\u95ED'), await o.shutdown?.(), process.exit(0));
         }),
         setTimeout(() => {
-          (o.error('\u274C \u5F3A\u5236\u5173\u95ED\u670D\u52A1\u5668'), process.exit(1));
+          (s.error('\u274C \u5F3A\u5236\u5173\u95ED\u670D\u52A1\u5668'), process.exit(1));
         }, 5e3));
     };
-    (process.on('SIGTERM', () => t('SIGTERM')),
-      process.on('SIGINT', () => t('SIGINT')),
-      process.on('uncaughtException', s => {
-        (o.fatal(s, `\u{1F4A5} \u672A\u6355\u83B7\u7684\u5F02\u5E38: ${s.message}`), process.exit(1));
+    (process.on('SIGTERM', () => e('SIGTERM')),
+      process.on('SIGINT', () => e('SIGINT')),
+      process.on('uncaughtException', r => {
+        (s.fatal(r, `\u{1F4A5} \u672A\u6355\u83B7\u7684\u5F02\u5E38: ${r.message}`), process.exit(1));
       }),
-      process.on('unhandledRejection', (s, n) => {
-        (o.fatal({reason: s, promise: n}, '\u26A0\uFE0F \u672A\u5904\u7406\u7684 Promise \u62D2\u7EDD'), process.exit(1));
+      process.on('unhandledRejection', (r, n) => {
+        (s.fatal({reason: r, promise: n}, '\u26A0\uFE0F \u672A\u5904\u7406\u7684 Promise \u62D2\u7EDD'), process.exit(1));
       }));
   },
-  $ = (e, {port: r, host: o = '0.0.0.0'} = {}) =>
-    new Promise((t, s) => {
+  A = (t, {port: o, host: s = '0.0.0.0'} = {}) =>
+    new Promise((e, r) => {
       let n = a => {
-          (p(), s(a));
+          (p(), r(a));
         },
         i = () => {
-          (p(), t(e));
+          (p(), e(t));
         },
         p = () => {
-          (e.off('error', n), e.off('listening', i));
+          (t.off('error', n), t.off('listening', i));
         };
-      (e.once('error', n), e.once('listening', i), e.listen(r, o));
+      (t.once('error', n), t.once('listening', i), t.listen(o, s));
     }),
-  R = (e, r = 56) => {
-    let o = e.length,
-      t = r - o,
-      s = ~~(t / 2);
-    return `${'-'.repeat(s)}${e}${'-'.repeat(t - s)}`;
+  $ = (t, o = 56) => {
+    let s = t.length,
+      e = o - s,
+      r = ~~(e / 2);
+    return `${'-'.repeat(r)}${t}${'-'.repeat(e - r)}`;
   };
+var E =
+  (t = {}) =>
+  async (o = 'huxy') => {
+    let {logLevel: s, transportOpt: e, ...r} = t,
+      n = (await import('pino')).default,
+      i = n({
+        name: o,
+        level: s ?? 'info',
+        formatters: {level: p => ({level: p})},
+        timestamp: n.stdTimeFunctions.isoTime,
+        base: null,
+        transport: {target: 'pino-pretty', options: {colorize: !0, levelFirst: !0, ...e}, ignore: 'pid,hostname,level,time', translateTime: 'SYS:yyyy-mm-dd HH:MM:ss'},
+        ...r,
+      });
+    return ((i.isPino = !0), i);
+  };
+var x = E;
+var R = E('error-handler'),
+  b = t => (o, s, e) => {
+    (R.error({message: 'Not Found', timestamp: c(), url: o.originalUrl, method: o.method, ip: o.ip, userAgent: o.get('User-Agent')}, '\u627E\u4E0D\u5230\u8DEF\u5F84'),
+      s.status(404).json({success: !1, status: 404, url: o.originalUrl, message: `\u8DEF\u7531 [${o.method} ${o.originalUrl}] \u4E0D\u5B58\u5728`, timestamp: c()}));
+  },
+  O = t => (o, s, e, r) => {
+    let n = o.status || 500,
+      i = o.message;
+    (R.error({message: i, timestamp: c(), stack: o.stack, url: s.originalUrl, method: s.method, ip: s.ip, userAgent: s.get('User-Agent')}, '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF'),
+      e.status(n).json({success: !1, message: (t.isDev, i), stack: t.isDev ? o.stack : void 0, timestamp: c()}));
+  };
+import {Router as V} from 'express';
+var W = t => {
+    let o = V();
+    return (
+      o.use('/health', (s, e) => {
+        e.status(200).json({status: 'OK', timestamp: c(), environment: t.nodeEnv, uptime: process.uptime(), memoryUsage: process.memoryUsage(), pid: process.pid});
+      }),
+      o.get('/', (s, e) => {
+        e.status(200).json({message: 'Node.js \u670D\u52A1\u5668\u8FD0\u884C\u4E2D', timestamp: c(), environment: t.nodeEnv});
+      }),
+      o
+    );
+  },
+  _ = W;
+var Y = async (t, o = {}, s) => {
+    if ((t.disable('x-powered-by'), t.set('trust proxy', o.trustProxy ?? 1), s.isPino)) {
+      let e = (await import('pino-http')).default;
+      t.use(e({logger: s, quietReqLogger: !0, autoLogging: !1, genReqId: !1}));
+    } else
+      t.use((e, r, n) => {
+        e.log = s;
+      });
+    (t.use(Q()),
+      t.use(K(o.helmet)),
+      t.use(z(o.cors)),
+      t.use(o.apiPrefix, B({keyGenerator: e => X(e.ip) || e.headers['x-huxy-auth'] || e.headers['x-api-key'] || e.headers.authorization, ...o.rateLimit})),
+      t.use(y.json({limit: '20mb'})),
+      t.use(y.urlencoded({extended: !0, limit: '20mb'})));
+  },
+  Z = (t, o = {}) => {
+    (t.use(_(o)), t.use(b(o)), t.use(O(o)));
+  },
+  q = async (t = {}, o) => {
+    let {logger: s, ...e} = g(t),
+      r = s ?? (await x(e.loggerConfig)('huxy')),
+      {port: n, ssl: i} = e;
+    (await h(n, e.host)) || ((e.port = Number(n) + 1), r.warn(`\u7AEF\u53E3 ${n} \u5DF2\u88AB\u5360\u7528\uFF0C\u73B0\u5728\u4F7F\u7528\u7AEF\u53E3 ${e.port}`));
+    let a = y();
+    await Y(a, e, r);
+    let l;
+    (i
+      ? (L(i) === 'object' ||
+          (r.error({ssl: {key: '/path/to/name.key', cert: '/path/to/name.pem'}}, '\u26A0\uFE0F \u8BF7\u8BBE\u7F6E\u6709\u6548 SSL \u6216\u8BBE\u7F6E {ssl: false}'), process.exit(1)),
+        (e.protocol = 'https'),
+        (l = J.createServer(i, a)),
+        N((u, d) => {
+          (d.writeHead(301, {Location: `${e.protocol}://${u.headers.host}${u.url}`}), d.end());
+        }).listen(80))
+      : (l = N(a)),
+      I(l, e, r));
+    try {
+      await A(l, e);
+    } catch (m) {
+      (r.error({err: m}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25'), process.exit(1));
+    }
+    try {
+      await o?.(e, a, l, r);
+    } catch (m) {
+      (r.error({err: m}, `\u274C \u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${m.message}`), process.exit(1));
+    }
+    return (Z(a, e), {app: a, httpServer: l, config: e, logger: r});
+  },
+  M = q;
 import 'dotenv';
-var W = {
+var ee = {
     nodeEnv: process.env.NODE_ENV || 'development',
     isDev: process.env.NODE_ENV === 'development',
     port: parseInt(process.env.PORT || '3000', 10),
@@ -115,7 +204,7 @@ var W = {
     cors: {origin: process.env.CORS_ORIGIN?.split(',') || '*', credentials: !0},
     rateLimit: {
       windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '300000', 10),
-      limit: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100', 10),
+      limit: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '500', 10),
       message: {message: '\u8BF7\u6C42\u8FC7\u4E8E\u9891\u7E41\uFF0C\u8BF7\u7A0D\u540E\u518D\u8BD5'},
     },
     helmet: {
@@ -124,141 +213,46 @@ var W = {
     },
     logLevel: process.env.LOG_LEVEL || 30,
   },
-  S = W;
-var f = (e, {transportOpt: r, ...o} = {}) =>
-  b({
-    name: e,
-    level: S.logLevel,
-    formatters: {level: t => ({level: t})},
-    timestamp: b.stdTimeFunctions.isoTime,
-    base: null,
-    transport: {target: 'pino-pretty', options: {colorize: !0, levelFirst: !0, ...r}, ignore: 'pid,hostname,level,time', translateTime: 'SYS:yyyy-mm-dd HH:MM:ss'},
-    ...o,
-  });
-var h = f;
-var O = f('error-handler'),
-  N = e => (r, o, t) => {
-    (O.error({message: 'Not Found', timestamp: c(), url: r.originalUrl, method: r.method, ip: r.ip, userAgent: r.get('User-Agent')}, '\u627E\u4E0D\u5230\u8DEF\u5F84'),
-      o.status(404).json({success: !1, status: 404, url: r.originalUrl, message: `\u8DEF\u7531 [${r.method} ${r.originalUrl}] \u4E0D\u5B58\u5728`, timestamp: c()}));
-  },
-  _ = e => (r, o, t, s) => {
-    let n = r.status || 500,
-      i = r.message;
-    (O.error({message: i, timestamp: c(), stack: r.stack, url: o.originalUrl, method: o.method, ip: o.ip, userAgent: o.get('User-Agent')}, '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF'),
-      t.status(n).json({success: !1, message: (e.isDev, i), stack: e.isDev ? r.stack : void 0, timestamp: c()}));
-  };
-import {Router as K} from 'express';
-var z = e => {
-    let r = K();
-    return (
-      r.use('/health', (o, t) => {
-        t.status(200).json({status: 'OK', timestamp: c(), environment: e.nodeEnv, uptime: process.uptime(), memoryUsage: process.memoryUsage(), pid: process.pid});
-      }),
-      r.get('/', (o, t) => {
-        t.status(200).json({message: 'Node.js \u670D\u52A1\u5668\u8FD0\u884C\u4E2D', timestamp: c(), environment: e.nodeEnv});
-      }),
-      r
-    );
-  },
-  M = z;
-var ee = (e, r = {}, o) => {
-    (e.disable('x-powered-by'),
-      e.set('trust proxy', r.trustProxy ?? 1),
-      e.use(Z({logger: o, quietReqLogger: !0, autoLogging: !1, genReqId: !1})),
-      e.use(Y()),
-      e.use(B(r.helmet)),
-      e.use(X(r.cors)),
-      e.use(r.apiPrefix, Q({keyGenerator: t => J(t.ip) || t.headers['x-huxy-auth'] || t.headers['x-api-key'] || t.headers.authorization, ...r.rateLimit})),
-      e.use(L.json({limit: '20mb'})),
-      e.use(L.urlencoded({extended: !0, limit: '20mb'})));
-  },
-  te = (e, r = {}) => {
-    (e.use(M(r)), e.use(N(r)), e.use(_(r)));
-  },
-  oe = async (e = {}, r) => {
-    let o = h(e.loggerName || 'huxy', e.loggerConfig),
-      t = h('http-request', e.loggerConfig),
-      s = v(e),
-      {port: n, ssl: i} = s;
-    (await x(n, s.host)) || ((s.port = Number(n) + 1), o.warn(`\u7AEF\u53E3 ${n} \u5DF2\u88AB\u5360\u7528\uFF0C\u73B0\u5728\u4F7F\u7528\u7AEF\u53E3 ${s.port}`));
-    let a = L();
-    ee(a, s, t);
-    let l;
-    (i
-      ? (w(i) === 'object' ||
-          (o.error({ssl: {key: '/path/to/name.key', cert: '/path/to/name.pem'}}, '\u26A0\uFE0F \u8BF7\u8BBE\u7F6E\u6709\u6548 SSL \u6216\u8BBE\u7F6E {ssl: false}'), process.exit(1)),
-        (s.protocol = 'https'),
-        (l = q.createServer(i, a)),
-        C((d, u) => {
-          (u.writeHead(301, {Location: `${s.protocol}://${d.headers.host}${d.url}`}), u.end());
-        }).listen(80))
-      : (l = C(a)),
-      A(l, s, o));
-    try {
-      await $(l, s);
-    } catch (m) {
-      (o.error({err: m}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25'), process.exit(1));
-    }
-    try {
-      await r?.(s, a, l, o);
-    } catch (m) {
-      (o.error({err: m}, `\u274C \u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${m.message}`), process.exit(1));
-    }
-    return (te(a, s), {app: a, httpServer: l, config: s, logger: o});
-  },
-  D = oe;
-var re = (e, r, o) =>
-    D({...S, ...e}, async (t, s, n, i) => {
-      let {port: p, host: a, nodeEnv: l, basepath: m, appName: d = 'HuxyServer', protocol: u} = t;
-      if (!o) {
-        let U = g()
-          .filter(E => E !== a)
-          .map(E => `${u}://${E}:${p}${m}`);
-        (i.info(R(d)),
-          i.info(`\u{1F680} \u670D\u52A1\u8FD0\u884C\u5728\u3010${l}\u3011\u73AF\u5883: ${u}://${a}:${p}${m}`),
+  C = ee;
+var te = (t, o, s) =>
+    M({...C, ...t}, async (e, r, n, i) => {
+      let {port: p, host: a, nodeEnv: l, basepath: m, appName: u = 'HuxyServer', protocol: d} = e;
+      if (!s) {
+        let k = f()
+          .filter(S => S !== a)
+          .map(S => `${d}://${S}:${p}${m}`);
+        (i.info($(u)),
+          i.info(`\u{1F680} \u670D\u52A1\u8FD0\u884C\u5728\u3010${l}\u3011\u73AF\u5883: ${d}://${a}:${p}${m}`),
           i.info(`-----------------[${c()}]------------------`),
-          i.info({ips: U}, '\u672C\u5730\u5730\u5740\uFF1A'));
+          i.info({ips: k}, '\u672C\u5730\u5730\u5740'));
       }
-      await r?.(t, s, n, i);
+      await o?.(e, r, n, i);
     }),
-  T = re;
-import ae from 'express';
-import {fileURLToPath as se} from 'node:url';
-import {dirname as ne, resolve as ie} from 'node:path';
-var P = (e = import.meta.url) => ne(se(e)),
-  I = (...e) => ie(P(), ...e),
-  H = I;
-var ce = {port: 9e3, host: 'localhost', basepath: '/', buildPath: './build'},
-  me = e => (e ? (e.endsWith('/') ? e : `${e}/`) : '/'),
-  pe = (e, r) =>
-    T({...ce, ...e}, async (o, t, s, n) => {
-      await r?.(o, t, s, n);
-      let {basepath: i, buildPath: p} = o;
+  v = te;
+import ne from 'express';
+import {fileURLToPath as oe} from 'node:url';
+import {dirname as se, resolve as re} from 'node:path';
+var P = (t = import.meta.url) => se(oe(t)),
+  w = (...t) => re(P(), ...t),
+  D = w;
+var ie = {port: 9e3, host: 'localhost', basepath: '/', buildPath: './build'},
+  ae = t => (t ? (t.endsWith('/') ? t : `${t}/`) : '/'),
+  ce = (t, o) =>
+    v({...ie, ...t}, async (s, e, r, n) => {
+      await o?.(s, e, r, n);
+      let {basepath: i, buildPath: p} = s;
       (i !== '/' &&
-        t.get('/', (m, d, u) => {
-          if (m.path === '/') return d.redirect(i);
-          u();
+        e.get('/', (m, u, d) => {
+          if (m.path === '/') return u.redirect(i);
+          d();
         }),
-        t.use(i, ae.static(p, {...o.staticCache})));
-      let a = me(i),
+        e.use(i, ne.static(p, {...s.staticCache})));
+      let a = ae(i),
         l = new RegExp(`^${a.replace(/\//g, '\\/')}(.*)$`);
-      t.get(l, (m, d) => {
-        d.sendFile(H(p, 'index.html'));
+      e.get(l, (m, u) => {
+        u.sendFile(D(p, 'index.html'));
       });
     }),
-  k = pe;
-var ot = {startServer: T, startStatic: k, logger: h, createLogger: f, dateTime: c, localIPs: g, nodeArgs: y, getEnvConfig: v, checkPort: x, getDirName: P, resolvePath: I};
-export {
-  x as checkPort,
-  f as createLogger,
-  c as dateTime,
-  ot as default,
-  P as getDirName,
-  v as getEnvConfig,
-  g as localIPs,
-  h as logger,
-  y as nodeArgs,
-  I as resolvePath,
-  T as startServer,
-  k as startStatic,
-};
+  H = ce;
+var Ye = {startServer: v, startStatic: H, createLogger: x, dateTime: c, localIPs: f, nodeArgs: T, getEnvConfig: g, checkPort: h, getDirName: P, resolvePath: w};
+export {h as checkPort, x as createLogger, c as dateTime, Ye as default, P as getDirName, g as getEnvConfig, f as localIPs, T as nodeArgs, w as resolvePath, v as startServer, H as startStatic};
