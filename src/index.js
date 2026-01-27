@@ -215,7 +215,13 @@ var ee = {
     },
     helmet: {
       contentSecurityPolicy: {
-        directives: {defaultSrc: ["'self'"], connectSrc: ['*'], styleSrc: ["'self'", "'unsafe-inline'"], scriptSrc: ["'self'", "'unsafe-eval'"], imgSrc: ["'self'", 'data:', 'https:']},
+        directives: {
+          defaultSrc: ["'self'"],
+          connectSrc: ['*'],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
+          imgSrc: ["'self'", 'data:', 'https:'],
+        },
       },
       crossOriginEmbedderPolicy: !1,
     },
