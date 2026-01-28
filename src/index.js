@@ -199,7 +199,7 @@ var Y = async (t, r = {}, o) => {
     return (Z(c, e, s), {app: c, httpServer: p, config: e, logger: s});
   },
   _ = q;
-import 'dotenv';
+import 'dotenv/config';
 var ee = {
     nodeEnv: process.env.NODE_ENV || 'development',
     isDev: process.env.NODE_ENV === 'development',
