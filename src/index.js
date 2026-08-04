@@ -36,7 +36,7 @@ var D = async (t = {}, r) => {
   f = D;
 import U from 'node:os';
 import G from 'node:net';
-var p = (t = new Date()) => t.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
+var m = (t = new Date()) => t.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
   S = t => Object.prototype.toString.call(t).slice(8, -1).toLowerCase(),
   h = t => {
     let r = t ? 'https' : 'http',
@@ -150,11 +150,11 @@ var p = (t = new Date()) => t.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
       s = ~~(e / 2);
     return `${'-'.repeat(s)}${t}${'-'.repeat(e - s)}`;
   };
-var A = (t, r) => (o, e, s) => {
+var $ = (t, r) => (o, e, s) => {
     (r.error(
       {
         message: 'Not Found',
-        timestamp: p(),
+        timestamp: m(),
         url: o.originalUrl,
         method: o.method,
         ip: o.ip,
@@ -169,17 +169,17 @@ var A = (t, r) => (o, e, s) => {
           status: 404,
           url: o.originalUrl,
           message: `\u8DEF\u7531 [${o.method} ${o.originalUrl}] \u4E0D\u5B58\u5728`,
-          timestamp: p(),
+          timestamp: m(),
         }));
   },
-  $ = (t, r) => (o, e, s, i) => {
+  A = (t, r) => (o, e, s, i) => {
     let n = o.status || 500,
       l = o.message,
       a = '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF';
     (r.error(
       {
         message: l,
-        timestamp: p(),
+        timestamp: m(),
         stack: o.stack,
         url: e.originalUrl,
         method: e.method,
@@ -188,7 +188,7 @@ var A = (t, r) => (o, e, s) => {
       },
       a,
     ),
-      s.status(n).json({success: !1, message: t.isDev ? l : a, stack: t.isDev ? o.stack : void 0, timestamp: p()}));
+      s.status(n).json({success: !1, message: t.isDev ? l : a, stack: t.isDev ? o.stack : void 0, timestamp: m()}));
   };
 import {Router as z} from 'express';
 var B = t => {
@@ -197,7 +197,7 @@ var B = t => {
       r.use('/health', (o, e) => {
         e.status(200).json({
           status: 'OK',
-          timestamp: p(),
+          timestamp: m(),
           environment: t.nodeEnv,
           uptime: process.uptime(),
           memoryUsage: process.memoryUsage(),
@@ -207,7 +207,7 @@ var B = t => {
       r.get('/', (o, e) => {
         e.status(200).json({
           message: 'Node.js \u670D\u52A1\u5668\u8FD0\u884C\u4E2D',
-          timestamp: p(),
+          timestamp: m(),
           environment: t.nodeEnv,
         });
       }),
@@ -238,7 +238,7 @@ var q = async (t, r = {}, o) => {
       t.use(T.urlencoded({extended: !0, limit: '20mb'})));
   },
   ee = (t, r = {}, o) => {
-    (t.use(b(r)), t.use(A(r, o)), t.use($(r, o)));
+    (t.use(b(r)), t.use($(r, o)), t.use(A(r, o)));
   },
   te = async (t = {}, r) => {
     let {logger: o, ...e} = v(t),
@@ -249,7 +249,7 @@ var q = async (t, r = {}, o) => {
       s.warn(`\u7AEF\u53E3 ${i} \u5DF2\u88AB\u5360\u7528\uFF0C\u73B0\u5728\u4F7F\u7528\u7AEF\u53E3 ${e.port}`));
     let a = T();
     await q(a, e, s);
-    let m;
+    let c;
     (n ?
       (S(n) === 'object' ||
         (s.error(
@@ -258,23 +258,23 @@ var q = async (t, r = {}, o) => {
         ),
         process.exit(1)),
       (e.protocol = 'https'),
-      (m = Z.createServer(n, a)),
+      (c = Z.createServer(n, a)),
       R((u, d) => {
         (d.writeHead(301, {Location: `${e.protocol}://${u.headers.host}${u.url}`}), d.end());
       }).listen(80))
-    : (m = R(a)),
-      w(m, e, s));
+    : (c = R(a)),
+      w(c, e, s));
     try {
-      await I(m, e);
-    } catch (c) {
-      (s.error({err: c}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25'), process.exit(1));
+      await I(c, e);
+    } catch (p) {
+      (s.error({err: p}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25'), process.exit(1));
     }
     try {
-      await r?.(e, a, m, s);
-    } catch (c) {
-      (s.error({err: c}, `\u274C \u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${c.message}`), process.exit(1));
+      await r?.(e, a, c, s);
+    } catch (p) {
+      (s.error({err: p}, `\u274C \u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${p.message}`), process.exit(1));
     }
-    return (ee(a, e, s), {app: a, httpServer: m, config: e, logger: s});
+    return (ee(a, e, s), {app: a, httpServer: c, config: e, logger: s});
   },
   O = te;
 var oe = {
@@ -304,14 +304,14 @@ var oe = {
   _ = oe;
 var re = (t, r, o) =>
     O({..._, ...t}, async (e, s, i, n) => {
-      let {port: l, host: a, nodeEnv: m, basepath: c, appName: u = 'HuxyServer', protocol: d} = e;
+      let {port: l, host: a, nodeEnv: c, basepath: p, appName: u = 'HuxyServer', protocol: d} = e;
       if (!o) {
         let H = h()
           .filter(y => y !== a)
-          .map(y => `${d}://${y}:${l}${c}`);
+          .map(y => `${d}://${y}:${l}${p}`);
         (n.info(L(u)),
-          n.info(`\u{1F680} \u670D\u52A1\u8FD0\u884C\u5728\u3010${m}\u3011\u73AF\u5883: ${d}://${a}:${l}${c}`),
-          n.info(`-----------------[${p()}]------------------`),
+          n.info(`\u{1F680} \u670D\u52A1\u8FD0\u884C\u5728\u3010${c}\u3011\u73AF\u5883: ${d}://${a}:${l}${p}`),
+          n.info(`-----------------[${m()}]------------------`),
           n.info({ips: H}, '\u672C\u5730\u5730\u5740'));
       }
       await r?.(e, s, i, n);
@@ -332,9 +332,14 @@ var ne = j(import.meta.url),
     x({...ae, ...t}, async (o, e, s, i) => {
       await r?.(o, e, s, i);
       let {basepath: n, buildPath: l} = o;
-      (e.use(n, ie.static(l, {...o.staticCache})), n !== '/' && e.get(n, (m, c, u) => c.redirect(`${n}/`)));
+      (e.use(n, ie.static(l, {...o.staticCache})),
+        n !== '/' &&
+          e.get(n, (c, p, u) => {
+            p.redirect(308, `${n}/${c.search ?? ''}`);
+          }));
       let a = n === '/' ? n : `${n}/`;
-      e.get(`${a}{*splat}`, (m, c) => {
+      e.get(`${a}{*splat}`, (c, p, u) => {
+        if (p.headersSent) return u();
         c.sendFile(ne(l, 'index.html'));
       });
     }),
@@ -343,7 +348,7 @@ var ze = {
   startServer: x,
   startStatic: C,
   createLogger: f,
-  dateTime: p,
+  dateTime: m,
   localIPs: h,
   nodeArgs: E,
   getEnvConfig: v,
@@ -354,7 +359,7 @@ var ze = {
 export {
   g as checkPort,
   f as createLogger,
-  p as dateTime,
+  m as dateTime,
   ze as default,
   M as getDirName,
   v as getEnvConfig,
