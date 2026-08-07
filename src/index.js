@@ -36,7 +36,7 @@ var D = async (o = {}, r) => {
   f = D;
 import U from 'node:os';
 import G from 'node:net';
-var m = (o = new Date()) => o.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
+var p = (o = new Date()) => o.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
   S = o => Object.prototype.toString.call(o).slice(8, -1).toLowerCase(),
   h = o => {
     let r = o ? 'https' : 'http',
@@ -154,7 +154,7 @@ var $ = (o, r) => (t, e, s) => {
     (r.error(
       {
         message: 'Not Found',
-        timestamp: m(),
+        timestamp: p(),
         url: t.originalUrl,
         method: t.method,
         ip: t.ip,
@@ -169,7 +169,7 @@ var $ = (o, r) => (t, e, s) => {
           status: 404,
           url: t.originalUrl,
           message: `\u8DEF\u7531 [${t.method} ${t.originalUrl}] \u4E0D\u5B58\u5728`,
-          timestamp: m(),
+          timestamp: p(),
         }));
   },
   A = (o, r) => (t, e, s, i) => {
@@ -179,7 +179,7 @@ var $ = (o, r) => (t, e, s) => {
     (r.error(
       {
         message: l,
-        timestamp: m(),
+        timestamp: p(),
         stack: t.stack,
         url: e.originalUrl,
         method: e.method,
@@ -188,7 +188,7 @@ var $ = (o, r) => (t, e, s) => {
       },
       a,
     ),
-      s.status(n).json({success: !1, message: o.isDev ? l : a, stack: o.isDev ? t.stack : void 0, timestamp: m()}));
+      s.status(n).json({success: !1, message: o.isDev ? l : a, stack: o.isDev ? t.stack : void 0, timestamp: p()}));
   };
 import {Router as z} from 'express';
 var B = o => {
@@ -197,7 +197,7 @@ var B = o => {
       r.use('/health', (t, e) => {
         e.status(200).json({
           status: 'OK',
-          timestamp: m(),
+          timestamp: p(),
           environment: o.nodeEnv,
           uptime: process.uptime(),
           memoryUsage: process.memoryUsage(),
@@ -207,7 +207,7 @@ var B = o => {
       r.get('/', (t, e) => {
         e.status(200).json({
           message: 'Node.js \u670D\u52A1\u5668\u8FD0\u884C\u4E2D',
-          timestamp: m(),
+          timestamp: p(),
           environment: o.nodeEnv,
         });
       }),
@@ -249,7 +249,7 @@ var q = async (o, r = {}, t) => {
       s.warn(`\u7AEF\u53E3 ${i} \u5DF2\u88AB\u5360\u7528\uFF0C\u73B0\u5728\u4F7F\u7528\u7AEF\u53E3 ${e.port}`));
     let a = T();
     await q(a, e, s);
-    let c;
+    let m;
     (n ?
       (S(n) === 'object' ||
         (s.error(
@@ -258,23 +258,23 @@ var q = async (o, r = {}, t) => {
         ),
         process.exit(1)),
       (e.protocol = 'https'),
-      (c = Z.createServer(n, a)),
+      (m = Z.createServer(n, a)),
       O((u, d) => {
         (d.writeHead(301, {Location: `${e.protocol}://${u.headers.host}${u.url}`}), d.end());
       }).listen(80))
-    : (c = O(a)),
-      w(c, e, s));
+    : (m = O(a)),
+      w(m, e, s));
     try {
-      await I(c, e);
-    } catch (p) {
-      (s.error({err: p}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25'), process.exit(1));
+      await I(m, e);
+    } catch (c) {
+      (s.error({err: c}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25'), process.exit(1));
     }
     try {
-      await r?.(e, a, c, s);
-    } catch (p) {
-      (s.error({err: p}, `\u274C \u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${p.message}`), process.exit(1));
+      await r?.(e, a, m, s);
+    } catch (c) {
+      (s.error({err: c}, `\u274C \u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${c.message}`), process.exit(1));
     }
-    return (ee(a, e, s), {app: a, httpServer: c, config: e, logger: s});
+    return (ee(a, e, s), {app: a, httpServer: m, config: e, logger: s});
   },
   R = te;
 var oe = {
@@ -306,14 +306,14 @@ var oe = {
   _ = oe;
 var re = (o, r, t) =>
     R({..._, ...o}, async (e, s, i, n) => {
-      let {port: l, host: a, nodeEnv: c, basepath: p, appName: u = 'HuxyServer', protocol: d} = e;
+      let {port: l, host: a, nodeEnv: m, basepath: c, appName: u = 'HuxyServer', protocol: d} = e;
       if (!t) {
         let H = h()
           .filter(y => y !== a)
-          .map(y => `${d}://${y}:${l}${p}`);
+          .map(y => `${d}://${y}:${l}${c}`);
         (n.info(L(u)),
-          n.info(`\u{1F680} \u670D\u52A1\u8FD0\u884C\u5728\u3010${c}\u3011\u73AF\u5883: ${d}://${a}:${l}${p}`),
-          n.info(`-----------------[${m()}]------------------`),
+          n.info(`\u{1F680} \u670D\u52A1\u8FD0\u884C\u5728\u3010${m}\u3011\u73AF\u5883: ${d}://${a}:${l}${c}`),
+          n.info(`-----------------[${p()}]------------------`),
           n.info({ips: H}, '\u672C\u5730\u5730\u5740'));
       }
       await r?.(e, s, i, n);
@@ -336,12 +336,12 @@ var ne = j(import.meta.url),
       let {basepath: n, buildPath: l} = t;
       (e.use(n, ie.static(l, {...t.staticCache})),
         n !== '/' &&
-          e.get(n, (c, p, u) => {
-            p.redirect(308, `${n}/${c.search ?? ''}`);
+          e.get(n, (m, c, u) => {
+            c.redirect(308, `${n}/${m.search ?? ''}`);
           }));
       let a = n === '/' ? n : `${n}/`;
-      e.get(`${a}{*splat}`, (c, p, u) => {
-        if (p.headersSent) return u();
+      e.get(`${a}{*splat}`, (m, c, u) => {
+        if (c.headersSent) return u();
         c.sendFile(ne(l, 'index.html'));
       });
     }),
@@ -350,7 +350,7 @@ var ze = {
   startServer: x,
   startStatic: C,
   createLogger: f,
-  dateTime: m,
+  dateTime: p,
   localIPs: h,
   nodeArgs: E,
   getEnvConfig: v,
@@ -361,7 +361,7 @@ var ze = {
 export {
   g as checkPort,
   f as createLogger,
-  m as dateTime,
+  p as dateTime,
   ze as default,
   M as getDirName,
   v as getEnvConfig,
