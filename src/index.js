@@ -91,7 +91,7 @@ var m = (o = new Date()) => o.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
     );
   },
   K = o =>
-    o?.length < 2 ? '/'
+    (o || '').length < 2 ? '/'
     : o.endsWith('/') ? o.slice(0, -1)
     : o,
   v = (o = {}, r = V) => {
