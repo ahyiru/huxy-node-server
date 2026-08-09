@@ -1,12 +1,12 @@
 import T from 'express';
-import X from 'cors';
-import {rateLimit as Q, ipKeyGenerator as J} from 'express-rate-limit';
-import Y from 'compression';
+import B from 'cors';
+import {rateLimit as X, ipKeyGenerator as Q} from 'express-rate-limit';
+import J from 'compression';
 import {createServer as O} from 'node:http';
-import Z from 'node:https';
-var D = async (o = {}, r) => {
+import Y from 'node:https';
+var C = async (r = {}, o) => {
     let t = (await import('pino')).default,
-      e = r === 'development',
+      e = o === 'development',
       s = t({
         name: 'Huxy',
         level: 'info',
@@ -29,33 +29,33 @@ var D = async (o = {}, r) => {
               options: {colorize: !0, translateTime: 'SYS:yyyy-mm-dd HH:MM:ss', ignore: 'pid,hostname,name'},
             }
           : void 0,
-        ...o,
+        ...r,
       });
     return ((s.isPino = !0), s);
   },
-  f = D;
-import U from 'node:os';
-import G from 'node:net';
-var p = (o = new Date()) => o.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
-  S = o => Object.prototype.toString.call(o).slice(8, -1).toLowerCase(),
-  h = o => {
-    let r = o ? 'https' : 'http',
-      t = U.networkInterfaces(),
+  f = C;
+import D from 'node:os';
+import U from 'node:net';
+var p = (r = new Date()) => r.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
+  S = r => Object.prototype.toString.call(r).slice(8, -1).toLowerCase(),
+  h = r => {
+    let o = r ? 'https' : 'http',
+      t = D.networkInterfaces(),
       e = [];
     return (Object.keys(t).map(i => e.push(...t[i])), e.filter(i => i.family === 'IPv4').map(i => i.address));
   },
-  E = o => {
-    let r = o ?? process.argv.slice(2) ?? [],
+  E = r => {
+    let o = r ?? process.argv.slice(2) ?? [],
       t = {};
     return (
-      r.map(e => {
+      o.map(e => {
         let [s, i] = e.split('=');
         t[s] = i;
       }),
       t
     );
   },
-  V = {
+  G = {
     NODE_ENV: 'nodeEnv',
     PORT: 'port',
     STATIC_PORT: 'staticPort',
@@ -69,18 +69,18 @@ var p = (o = new Date()) => o.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
     JWT_SECRET: 'secret',
     AUTH_TOKEN: 'authToken',
   },
-  W = (o, r, t) => {
-    let [e, s] = o.split('.');
-    e && s ? (t[e] || (t[e] = {}), (t[e][s] = r)) : (t[e] = r);
+  V = (r, o, t) => {
+    let [e, s] = r.split('.');
+    e && s ? (t[e] || (t[e] = {}), (t[e][s] = o)) : (t[e] = o);
   },
-  F = o => {
-    let {connectSrc: r, ...t} = o;
-    if (!r) return t;
+  W = r => {
+    let {connectSrc: o, ...t} = r;
+    if (!o) return t;
     (t.helmet.contentSecurityPolicy || (t.helmet.contentSecurityPolicy = {}),
       t.helmet.contentSecurityPolicy.directives || (t.helmet.contentSecurityPolicy.directives = {}));
     let e =
-      typeof r == 'string' ? r.split(',').map(s => s.trim())
-      : Array.isArray(r) ? r
+      typeof o == 'string' ? o.split(',').map(s => s.trim())
+      : Array.isArray(o) ? o
       : [];
     return (
       (t.helmet.contentSecurityPolicy.directives.connectSrc = [
@@ -90,41 +90,41 @@ var p = (o = new Date()) => o.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
       t
     );
   },
-  K = o =>
-    (o || '').length < 2 ? '/'
-    : o.endsWith('/') ? o.slice(0, -1)
-    : o,
-  v = (o = {}, r = V) => {
+  F = r =>
+    (r || '').length < 2 ? '/'
+    : r.endsWith('/') ? r.slice(0, -1)
+    : r,
+  v = (r = {}, o = G) => {
     let {env: t} = process;
-    Object.keys(r).map(s => {
-      let i = t[s] ?? o[s];
-      i && W(r[s], i, o);
+    Object.keys(o).map(s => {
+      let i = t[s] ?? r[s];
+      i && V(o[s], i, r);
     });
-    let e = {...o, ...E()};
+    let e = {...r, ...E()};
     return (
       (e.port = e.staticPort || e.port),
       (e.isDev = e.nodeEnv === 'development'),
-      (e.basepath = K(e.basepath)),
+      (e.basepath = F(e.basepath)),
       (e.protocol = 'http'),
-      F(e)
+      W(e)
     );
   },
-  g = (o, r = '127.0.0.1') =>
+  x = (r, o = '127.0.0.1') =>
     new Promise(t => {
-      let e = G.createServer();
+      let e = U.createServer();
       (e.once('error', s => {
         (e.close(), t((s.code === 'EADDRINUSE', !1)));
       }),
         e.once('listening', () => {
           (e.close(), t(!0));
         }),
-        e.listen(Number(o), r));
+        e.listen(Number(r), o));
     }),
-  w = (o, r = {}, t) => {
+  w = (r, o = {}, t) => {
     let e = s => {
       (t.warn(`\u6536\u5230 ${s} \u4FE1\u53F7, \u{1F6D1} \u6B63\u5728\u5173\u95ED\u670D\u52A1\u5668...`),
-        o.close(async () => {
-          (t.info('\u{1F44B} \u670D\u52A1\u5668\u5DF2\u5173\u95ED'), await r.shutdown?.(), process.exit(0));
+        r.close(async () => {
+          (t.info('\u{1F44B} \u670D\u52A1\u5668\u5DF2\u5173\u95ED'), await o.shutdown?.(), process.exit(0));
         }),
         setTimeout(() => {
           (t.error('\u274C \u5F3A\u5236\u5173\u95ED\u670D\u52A1\u5668'), process.exit(1));
@@ -140,18 +140,18 @@ var p = (o = new Date()) => o.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
           process.exit(1));
       }));
   },
-  I = (o, {port: r = 3e3, host: t = '0.0.0.0'} = {}) =>
+  I = (r, {port: o = 3e3, host: t = '::'} = {}) =>
     new Promise((e, s) => {
-      (o.once('error', s), o.once('listening', () => e(o)), o.listen(r, t));
+      (r.once('error', s), r.once('listening', () => e(r)), r.listen(o, t));
     }),
-  L = (o, r = 56) => {
-    let t = o.length,
-      e = r - t,
+  L = (r, o = 56) => {
+    let t = r.length,
+      e = o - t,
       s = ~~(e / 2);
-    return `${'-'.repeat(s)}${o}${'-'.repeat(e - s)}`;
+    return `${'-'.repeat(s)}${r}${'-'.repeat(e - s)}`;
   };
-var $ = (o, r) => (t, e, s) => {
-    (r.error(
+var A = (r, o) => (t, e, s) => {
+    (o.error(
       {
         message: 'Not Found',
         timestamp: p(),
@@ -172,11 +172,11 @@ var $ = (o, r) => (t, e, s) => {
           timestamp: p(),
         }));
   },
-  A = (o, r) => (t, e, s, i) => {
+  $ = (r, o) => (t, e, s, i) => {
     let n = t.status || 500,
       l = t.message,
       a = '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF';
-    (r.error(
+    (o.error(
       {
         message: l,
         timestamp: p(),
@@ -188,68 +188,68 @@ var $ = (o, r) => (t, e, s) => {
       },
       a,
     ),
-      s.status(n).json({success: !1, message: o.isDev ? l : a, stack: o.isDev ? t.stack : void 0, timestamp: p()}));
+      s.status(n).json({success: !1, message: r.isDev ? l : a, stack: r.isDev ? t.stack : void 0, timestamp: p()}));
   };
-import {Router as z} from 'express';
-var B = o => {
-    let r = z();
+import {Router as K} from 'express';
+var z = r => {
+    let o = K();
     return (
-      r.use('/health', (t, e) => {
+      o.use('/health', (t, e) => {
         e.status(200).json({
           status: 'OK',
           timestamp: p(),
-          environment: o.nodeEnv,
+          environment: r.nodeEnv,
           uptime: process.uptime(),
           memoryUsage: process.memoryUsage(),
           pid: process.pid,
         });
       }),
-      r.get('/', (t, e) => {
+      o.get('/', (t, e) => {
         e.status(200).json({
           message: 'Node.js \u670D\u52A1\u5668\u8FD0\u884C\u4E2D',
           timestamp: p(),
-          environment: o.nodeEnv,
+          environment: r.nodeEnv,
         });
       }),
-      r
+      o
     );
   },
-  b = B;
-var q = async (o, r = {}, t) => {
-    if ((o.disable('x-powered-by'), o.set('trust proxy', r.trustProxy ?? !0), t.isPino)) {
+  b = z;
+var Z = async (r, o = {}, t) => {
+    if ((r.disable('x-powered-by'), r.set('trust proxy', o.trustProxy ?? !0), t.isPino)) {
       let e = (await import('pino-http')).default;
-      o.use(e({logger: t, quietReqLogger: !0, autoLogging: !1}));
+      r.use(e({logger: t, quietReqLogger: !0, autoLogging: !1}));
     } else
-      o.use((e, s, i) => {
+      r.use((e, s, i) => {
         e.log = t;
       });
-    if ((o.use(Y()), o.use(X(r.cors)), r.helmet)) {
+    if ((r.use(J()), r.use(B(o.cors)), o.helmet)) {
       let e = (await import('helmet')).default;
-      o.use(e(S(r.helmet) === 'object' ? r.helmet : {}));
+      r.use(e(S(o.helmet) === 'object' ? o.helmet : {}));
     }
-    (o.use(
-      r.apiPrefix,
-      Q({
-        keyGenerator: e => J(e.ip) || e.headers['x-huxy-auth'] || e.headers['x-api-key'] || e.headers.authorization,
-        ...r.rateLimit,
+    (r.use(
+      o.apiPrefix,
+      X({
+        keyGenerator: e => Q(e.ip) || e.headers['x-huxy-auth'] || e.headers['x-api-key'] || e.headers.authorization,
+        ...o.rateLimit,
       }),
     ),
-      o.use(T.json({limit: '20mb'})),
-      o.use(T.urlencoded({extended: !0, limit: '20mb'})));
+      r.use(T.json({limit: '20mb'})),
+      r.use(T.urlencoded({extended: !0, limit: '20mb'})));
   },
-  ee = (o, r = {}, t) => {
-    (o.use(b(r)), o.use($(r, t)), o.use(A(r, t)));
+  q = (r, o = {}, t) => {
+    (r.use(b(o)), r.use(A(o, t)), r.use($(o, t)));
   },
-  te = async (o = {}, r) => {
-    let {logger: t, ...e} = v(o),
+  ee = async (r = {}, o) => {
+    let {logger: t, ...e} = v(r),
       s = t ?? (await f(e.loggerConfig, e.nodeEnv)),
       {port: i, ssl: n} = e;
-    (await g(i, e.host)) ||
+    (await x(i, e.host)) ||
       ((e.port = Number(i) + 1),
       s.warn(`\u7AEF\u53E3 ${i} \u5DF2\u88AB\u5360\u7528\uFF0C\u73B0\u5728\u4F7F\u7528\u7AEF\u53E3 ${e.port}`));
     let a = T();
-    await q(a, e, s);
-    let m;
+    await Z(a, e, s);
+    let c;
     (n ?
       (S(n) === 'object' ||
         (s.error(
@@ -258,43 +258,43 @@ var q = async (o, r = {}, t) => {
         ),
         process.exit(1)),
       (e.protocol = 'https'),
-      (m = Z.createServer(n, a)),
+      (c = Y.createServer(n, a)),
       O((u, d) => {
         (d.writeHead(301, {Location: `${e.protocol}://${u.headers.host}${u.url}`}), d.end());
       }).listen(80))
-    : (m = O(a)),
-      w(m, e, s));
+    : (c = O(a)),
+      w(c, e, s));
     try {
-      await I(m, e);
-    } catch (c) {
-      (s.error({err: c}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25'), process.exit(1));
+      await I(c, e);
+    } catch (m) {
+      (s.error({err: m}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25'), process.exit(1));
     }
     try {
-      await r?.(e, a, m, s);
-    } catch (c) {
-      (s.error({err: c}, `\u274C \u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${c.message}`), process.exit(1));
+      await o?.(e, a, c, s);
+    } catch (m) {
+      (s.error({err: m}, `\u274C \u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${m.message}`), process.exit(1));
     }
-    return (ee(a, e, s), {app: a, httpServer: m, config: e, logger: s});
+    return (q(a, e, s), {app: a, httpServer: c, config: e, logger: s});
   },
-  R = te;
-var oe = {
+  R = ee;
+var te = {
     nodeEnv: process.env.NODE_ENV,
     isDev: process.env.NODE_ENV,
     port: parseInt(process.env.PORT || '3000', 10),
-    host: process.env.HOST || 'localhost',
+    host: process.env.HOST || '::',
     basepath: process.env.BASEPATH || '/',
     apiPrefix: '/api',
     cors: {origin: process.env.CORS_ORIGIN?.split(',') || '*'},
     rateLimit: {
       windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '300000', 10),
       limit: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '150', 10),
-      skip: o => {
-        let {path: r, url: t} = o;
+      skip: r => {
+        let {path: o, url: t} = r;
         return !!(
-          r.startsWith('/static/') ||
-          /\.(css|js|png|jpg|jpeg|gif|ico|svg|woff2?|ttf|eot)$/i.test(r) ||
-          r === '/health' ||
-          r === '/ready' ||
+          o.startsWith('/static/') ||
+          /\.(css|js|png|jpg|jpeg|gif|ico|svg|woff2?|ttf|eot)$/i.test(o) ||
+          o === '/health' ||
+          o === '/ready' ||
           t.includes('/socket.io') ||
           t.includes('EIO=')
         );
@@ -303,71 +303,70 @@ var oe = {
     },
     logLevel: process.env.LOG_LEVEL || 30,
   },
-  _ = oe;
-var re = (o, r, t) =>
-    R({..._, ...o}, async (e, s, i, n) => {
-      let {port: l, host: a, nodeEnv: m, basepath: c, appName: u = 'HuxyServer', protocol: d} = e;
+  _ = te;
+var re = (r, o, t) =>
+    R({..._, ...r}, async (e, s, i, n) => {
+      let {port: l, host: a, basepath: c, appName: m = 'HuxyServer', protocol: u} = e;
       if (!t) {
-        let H = h()
+        let d = h()
           .filter(y => y !== a)
-          .map(y => `${d}://${y}:${l}${c}`);
-        (n.info(L(u)),
-          n.info(`\u{1F680} \u670D\u52A1\u8FD0\u884C\u5728\u3010${m}\u3011\u73AF\u5883: ${d}://${a}:${l}${c}`),
+          .map(y => `${u}://${y}:${l}${c}`);
+        (n.info(L(m)),
+          n.info(`\u{1F680} \u670D\u52A1\u6B63\u5728\u8FD0\u884C: ${u}://${a}:${l}${c}`),
           n.info(`-----------------[${p()}]------------------`),
-          n.info({ips: H}, '\u672C\u5730\u5730\u5740'));
+          n.info({ips: d}, '\u672C\u5730\u5730\u5740'));
       }
-      await r?.(e, s, i, n);
+      await o?.(e, s, i, n);
     }),
-  x = re;
-import ie from 'express';
+  g = re;
+import se from 'express';
 import {fileURLToPath as k} from 'node:url';
-import {dirname as N, resolve as se} from 'node:path';
-var M = (o = import.meta.url) => N(k(o)),
+import {dirname as N, resolve as oe} from 'node:path';
+var M = (r = import.meta.url) => N(k(r)),
   P =
-    (o = import.meta.url) =>
-    (...r) =>
-      se(N(k(o)), ...r),
+    (r = import.meta.url) =>
+    (...o) =>
+      oe(N(k(r)), ...o),
   j = P;
-var ne = j(import.meta.url),
-  ae = {port: 9e3, host: 'localhost', buildPath: './build'},
-  ce = (o, r) =>
-    x({...ae, ...o}, async (t, e, s, i) => {
-      await r?.(t, e, s, i);
+var ie = j(import.meta.url),
+  ne = (r, o) =>
+    g(r, async (t, e, s, i) => {
+      await o?.(t, e, s, i);
       let {basepath: n, buildPath: l} = t;
-      (e.use(n, ie.static(l, {...t.staticCache})),
+      (e.use(n, se.static(l, {...t.staticCache})),
         n !== '/' &&
-          e.get(n, (m, c, u) => {
-            c.redirect(308, `${n}/${m.search ?? ''}`);
+          e.get(n, (c, m, u) => {
+            m.redirect(308, `${n}/${c.search ?? ''}`);
           }));
       let a = n === '/' ? n : `${n}/`;
-      e.get(`${a}{*splat}`, (m, c, u) => {
-        if (c.headersSent) return u();
-        c.sendFile(ne(l, 'index.html'));
+      e.get(`${a}{*splat}`, (c, m, u) => {
+        if (m.headersSent) return u();
+        m.sendFile(ie(l, 'index.html'));
       });
     }),
-  C = ce;
-var ze = {
-  startServer: x,
-  startStatic: C,
+  H = ne;
+var Fe = {
+  startServer: g,
+  startStatic: H,
   createLogger: f,
   dateTime: p,
   localIPs: h,
   nodeArgs: E,
   getEnvConfig: v,
-  checkPort: g,
+  checkPort: x,
   getDirName: M,
   resolvePath: P,
 };
 export {
-  g as checkPort,
+  x as checkPort,
   f as createLogger,
   p as dateTime,
-  ze as default,
+  Fe as default,
   M as getDirName,
   v as getEnvConfig,
   h as localIPs,
   E as nodeArgs,
   P as resolvePath,
-  x as startServer,
-  C as startStatic,
+  g as startServer,
+  H as startStatic,
 };
