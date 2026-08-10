@@ -61,9 +61,3 @@ __tests__/
 *.out
 *.exe
 *.dll
-
-# package-lock.json
-package-lock.json
-
-# pnpm-lock.yaml
-pnpm-lock.yaml

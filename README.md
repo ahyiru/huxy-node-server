@@ -465,9 +465,11 @@ server {
 }
 ```
 
+## [代理服务配置](https://github.com/ahyiru/huxy-node-server/blob/main/docs/PROXY.md)
+
 ## 📝 许可证
 
-MIT © [ahyiru](https://github.com/ahyiru)
+MIT © [ahyiru](https://github.com/ahyiru/huxy-node-server/blob/main/LICENSE)
 
 ## 🤝 贡献
 
@@ -484,12 +486,13 @@ MIT © [ahyiru](https://github.com/ahyiru)
 如果您有任何问题或建议，请通过以下方式联系：
 
 - GitHub Issues: https://github.com/ahyiru/huxy-node-server/issues
-- 电子邮件: ahyiru@example.com
+- 电子邮件: ah.yiru@egmail.com
 
 ## 📄 详细文档
 
 - [文档索引](https://github.com/ahyiru/huxy-node-server/blob/main/docs/INDEX.md)
 - [API 文档](https://github.com/ahyiru/huxy-node-server/blob/main/docs/API.md)
+- [PROXY 文档](https://github.com/ahyiru/huxy-node-server/blob/main/docs/PROXY.md)
 - [配置指南](https://github.com/ahyiru/huxy-node-server/blob/main/docs/CONFIGURATION.md)
 - [部署指南](https://github.com/ahyiru/huxy-node-server/blob/main/docs/DEPLOYMENT.md)
 - [更新日志](https://github.com/ahyiru/huxy-node-server/blob/main/CHANGELOG.md)
