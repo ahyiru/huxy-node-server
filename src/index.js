@@ -30,34 +30,34 @@ var he,
         return t === -1 ? null : {username: e.slice(0, t), password: e.slice(t + 1)};
       }),
       (b = ({realm: r = 'Restricted', users: e, authorize: t, skip: o, unauthorizedResponse: s} = {}) => {
-        let n = a =>
-            typeof o == 'function' ? o(a)
-            : o instanceof RegExp ? o.test(a.path)
-            : Array.isArray(o) ? o.includes(a.path)
+        let n = c =>
+            typeof o == 'function' ? o(c)
+            : o instanceof RegExp ? o.test(c.path)
+            : Array.isArray(o) ? o.includes(c.path)
             : !1,
-          i = (a, l, u) => {
-            if (typeof t == 'function') return t(a, l, u);
+          i = (c, p, u) => {
+            if (typeof t == 'function') return t(c, p, u);
             if (e) {
-              let p = e[a];
-              return p !== void 0 && he(l, p);
+              let l = e[c];
+              return l !== void 0 && he(p, l);
             }
             return !1;
           },
-          c = (a, l) => {
-            a.set('WWW-Authenticate', `Basic realm="${r}", charset="UTF-8"`);
-            let u = typeof s == 'function' ? s(l) : void 0;
-            a.status(401).send(u);
+          a = (c, p) => {
+            c.set('WWW-Authenticate', `Basic realm="${r}", charset="UTF-8"`);
+            let u = typeof s == 'function' ? s(p) : void 0;
+            c.status(401).send(u);
           };
-        return async (a, l, u) => {
-          if (n(a)) return u();
-          let p = a.headers['proxy-authorization'] || a.headers.authorization,
-            f = ye(p);
-          if (!f) return c(l, a);
+        return async (c, p, u) => {
+          if (n(c)) return u();
+          let l = c.headers['proxy-authorization'] || c.headers.authorization,
+            d = ye(l);
+          if (!d) return a(p, c);
           try {
-            if (!(await i(f.username, f.password, a))) return c(l, a);
-            ((a.basicAuthInfo = {username: f.username}), u());
+            if (!(await i(d.username, d.password, c))) return a(p, c);
+            ((c.basicAuthInfo = {username: d.username}), u());
           } catch {
-            l.status(500).end();
+            p.status(500).end();
           }
         };
       }),
@@ -102,7 +102,7 @@ var ee = async (r = {}, e) => {
 import te from 'node:os';
 import re from 'node:net';
 var m = (r = new Date()) => r.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
-  d = r => Object.prototype.toString.call(r).slice(8, -1).toLowerCase(),
+  f = r => Object.prototype.toString.call(r).slice(8, -1).toLowerCase(),
   oe = r => {
     let e = r ? 'https' : 'http',
       t = te.networkInterfaces(),
@@ -185,7 +185,7 @@ var m = (r = new Date()) => r.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
         }),
         t.listen(Number(r)));
     }),
-  S = (r, e = {}, t) => {
+  P = (r, e = {}, t) => {
     let o = s => {
       (t.warn(`\u6536\u5230 ${s} \u4FE1\u53F7, \u{1F6D1} \u6B63\u5728\u5173\u95ED\u670D\u52A1\u5668...`),
         r.close(async () => {
@@ -205,7 +205,7 @@ var m = (r = new Date()) => r.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
           process.exit(1));
       }));
   },
-  P = (r, {port: e = 3e3, host: t} = {}) =>
+  S = (r, {port: e = 3e3, host: t} = {}) =>
     new Promise((o, s) => {
       (r.once('error', s), r.once('listening', () => o(r)), r.listen(e, t === 'localhost' ? '::' : t));
     }),
@@ -216,15 +216,15 @@ var m = (r = new Date()) => r.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
     return `${'-'.repeat(s)}${r}${'-'.repeat(o - s)}`;
   },
   E = (r = {}, e) => {
-    let {port: t, host: o, basepath: s, appName: n = 'HuxyServer', protocol: i, serverLogger: c} = r;
-    if (typeof c == 'function') return c(r, e);
-    let a = oe()
-      .filter(l => l !== o)
-      .map(l => `${i}://${l}:${t}${s}`);
+    let {port: t, host: o, basepath: s, appName: n = 'HuxyServer', protocol: i, serverLogger: a} = r;
+    if (typeof a == 'function') return a(r, e);
+    let c = oe()
+      .filter(p => p !== o)
+      .map(p => `${i}://${p}:${t}${s}`);
     (e.info(ue(n)),
       e.info(`\u{1F680} \u670D\u52A1\u6B63\u5728\u8FD0\u884C: ${i}://${o}:${t}${s}`),
       e.info(`-----------------[${m()}]------------------`),
-      e.info({ips: a}, '\u672C\u5730\u5730\u5740'));
+      e.info({ips: c}, '\u672C\u5730\u5730\u5740'));
   };
 var I = (r, e) => (t, o, s) => {
     (e.error(
@@ -250,11 +250,11 @@ var I = (r, e) => (t, o, s) => {
   },
   $ = (r, e) => (t, o, s, n) => {
     let i = t.status || 500,
-      c = t.message,
-      a = '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF';
+      a = t.message,
+      c = '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF';
     (e.error(
       {
-        message: c,
+        message: a,
         timestamp: m(),
         stack: t.stack,
         url: o.originalUrl,
@@ -262,19 +262,19 @@ var I = (r, e) => (t, o, s) => {
         ip: o.ip,
         userAgent: o.get('User-Agent'),
       },
-      a,
+      c,
     ),
-      s.status(i).json({success: !1, message: r.isDev ? c : a, stack: r.isDev ? t.stack : void 0, timestamp: m()}));
+      s.status(i).json({success: !1, message: r.isDev ? a : c, stack: r.isDev ? t.stack : void 0, timestamp: m()}));
   };
-import {fileURLToPath as le} from 'node:url';
-import {dirname as pe, resolve as me} from 'node:path';
-var de =
+import {fileURLToPath as pe} from 'node:url';
+import {dirname as le, resolve as me} from 'node:path';
+var fe =
     (r = import.meta.url) =>
     (...e) =>
-      me(pe(le(r)), ...e),
-  R = de;
-var fe = R(import.meta.url),
-  H = (r, {basepath: e, buildPath: t} = {}) => {
+      me(le(pe(r)), ...e),
+  H = fe;
+var de = H(import.meta.url),
+  R = (r, {basepath: e, buildPath: t} = {}) => {
     e !== '/' &&
       r.get(e, (s, n, i) => {
         n.redirect(308, `${e}/${s.search ?? ''}`);
@@ -282,7 +282,7 @@ var fe = R(import.meta.url),
     let o = e === '/' ? e : `${e}/`;
     r.get(`${o}{*splat}`, (s, n, i) => {
       if (n.headersSent) return i();
-      n.sendFile(fe(t, 'index.html'));
+      n.sendFile(de(t, 'index.html'));
     });
   };
 var ge = async (r, e) => {
@@ -299,7 +299,7 @@ var ge = async (r, e) => {
     );
   },
   k = ge;
-import {createProxyMiddleware as Pe} from 'http-proxy-middleware';
+import {createProxyMiddleware as Se} from 'http-proxy-middleware';
 import ve from 'jsonwebtoken';
 var M = (r, {secret: e = '', ...t} = {}) => ve.verify(r, e, t);
 var _ =
@@ -326,15 +326,15 @@ var _ =
       let i = M(n, r);
       (e.log.info(i, '\u8BA4\u8BC1\u6210\u529F'), (e.user = i), o());
     } catch (i) {
-      let c = i.type || i.name;
+      let a = i.type || i.name;
       return (
-        c === 'TokenExpiredError' ?
+        a === 'TokenExpiredError' ?
           (e.log.error({ip: e.ip}, '\u8BA4\u8BC1\u5931\u8D25: \u4EE4\u724C\u5DF2\u8FC7\u671F'),
           t.status(401).json({message: '\u4EE4\u724C\u5DF2\u8FC7\u671F'}))
-        : c === 'JsonWebTokenError' ?
+        : a === 'JsonWebTokenError' ?
           (e.log.error({ip: e.ip}, '\u8BA4\u8BC1\u5931\u8D25: \u65E0\u6548\u7684\u4EE4\u724C'),
           t.status(403).json({message: '\u65E0\u6548\u7684\u4EE4\u724C'}))
-        : c === 'AuthorizationError' ?
+        : a === 'AuthorizationError' ?
           (e.log.error({ip: e.ip}, `\u8BA4\u8BC1\u5931\u8D25: ${i.message}`),
           t.status(i.status).json({message: i.message}))
         : (e.log.error({err: i, ip: e.ip}, '\u8BA4\u8BC1\u5931\u8D25: \u5185\u90E8\u670D\u52A1\u5668\u9519\u8BEF'),
@@ -343,7 +343,7 @@ var _ =
     }
   };
 var Ae = r =>
-    d(r) === 'object' ? [r]
+    f(r) === 'object' ? [r]
     : Array.isArray(r) ? r
     : [],
   C = ({proxys: r = [], apiPrefix: e = '/'} = {}) =>
@@ -359,17 +359,17 @@ var we =
       if (e.method === 'OPTIONS') return o();
       let s = N(r.whiteAuthKeys);
       if (U(r.whitePathList, r.apiPrefix).includes(e.path)) return o();
-      let {authToken: i, jwtConfig: c} = r;
+      let {authToken: i, jwtConfig: a} = r;
       if (typeof i == 'string' && i.length > 0 && i !== 'false') {
-        let l = e.headers,
-          u = l['x-huxy-auth'] || l['x-api-key'] || l.authorization || '',
-          p = e.query.token || u.split('Bearer ')[1];
-        return (p && p === i) || s.includes(p) ?
+        let p = e.headers,
+          u = p['x-huxy-auth'] || p['x-api-key'] || p.authorization || '',
+          l = e.query.token || u.split('Bearer ')[1];
+        return (l && l === i) || s.includes(l) ?
             o()
           : (e.log.error('\u8BA4\u8BC1\u5931\u8D25: \u65E0\u6548\u7684\u4EE4\u724C'),
             t.status(403).json({message: '\u65E0\u6548\u7684\u4EE4\u724C'}));
       }
-      if (d(c) === 'object') return _({secret, expiresIn, algorithm, issuer})(e, t, o);
+      if (f(a) === 'object') return _({secret, expiresIn, algorithm, issuer})(e, t, o);
       o();
     },
   B = we;
@@ -383,7 +383,7 @@ var Te = [
     'cf-ray',
     'x-huxy-auth',
   ],
-  Se = ['x-powered-by', 'server'],
+  Pe = ['x-powered-by', 'server'],
   D = (r, e) => {
     let t = new Headers(r);
     return (Te.forEach(o => t.delete(o)), t.set('Host', e), t.set('User-Agent', 'IHUXY-API/1.0'), t);
@@ -391,7 +391,7 @@ var Te = [
   W = r => {
     let e = new Headers(r);
     return (
-      Se.forEach(t => e.delete(t)),
+      Pe.forEach(t => e.delete(t)),
       e.set('Access-Control-Allow-Origin', '*'),
       e.set('X-Content-Type-Options', 'nosniff'),
       e.get('content-type')?.includes('text/event-stream') &&
@@ -421,36 +421,32 @@ var Ee = (r, e = '/') => {
     ws: !0,
     followRedirects: !0,
     on: {
-      proxyReq: (n, i, c) => {
+      proxyReq: (n, i, a) => {
         !o && D(n.headers, r);
       },
-      proxyRes: (n, i, c) => {
+      proxyRes: (n, i, a) => {
         !o && W(n.headers);
       },
-      error: (n, i, c) => {
-        let a = i.url;
-        !a.includes('EIO=') &&
-          !a.includes('/socket.io') &&
-          (i.log.error({err: n}, '\u4EE3\u7406\u9519\u8BEF'),
-          c.headersSent || c.status(502).json({error: '\u7F51\u5173\u9519\u8BEF'}));
+      error: (n, i, a) => {
+        typeof a?.writeHead == 'function' && (a.headersSent || a.status(502).json({error: '\u7F51\u5173\u9519\u8BEF'}));
       },
     },
     ...s,
   }),
-  $e = (r, e = {}, t) => {
-    let {apiPrefix: o = '/', proxyList: s = []} = e;
-    (t.info(`\u{1F4DD} API \u63A5\u53E3\u5730\u5740: ${e.protocol}://${e.host}:${e.port}${o}`),
-      s.map(({prefix: n, target: i, withPrefix: c = !0, ...a}) => {
-        ((i = c ? `${i}${n}` : i),
-          r.use(n, B(e), Pe(Ie({prefix: n, target: i, withPrefix: c, ...a}))),
-          t.info(`\u2705 \u4EE3\u7406\u4E2D ${n} \u{1F449} ${i}`));
+  $e = (r, e = {}, t, o) => {
+    let {apiPrefix: s = '/', proxyList: n = []} = e;
+    (t.info(`\u{1F4DD} API \u63A5\u53E3\u5730\u5740: ${e.protocol}://${e.host}:${e.port}${s}`),
+      n.map(({prefix: i, target: a, withPrefix: c = !0, ...p}) => {
+        a = c ? `${a}${i}` : a;
+        let u = Se(Ie({prefix: i, target: a, withPrefix: c, ...p}));
+        (r.use(i, B(e), u), t.info(`\u2705 \u4EE3\u7406\u4E2D ${i} \u{1F449} ${a}`), o.on('upgrade', u.upgrade));
       }),
-      Ee(r, o));
+      Ee(r, s));
   },
   z = $e;
-import {Router as Re} from 'express';
-var He = r => {
-    let e = Re();
+import {Router as He} from 'express';
+var Re = r => {
+    let e = He();
     return (
       e.use('/health', (t, o) => {
         o.status(200).json({
@@ -472,7 +468,7 @@ var He = r => {
       e
     );
   },
-  G = He;
+  G = Re;
 var je = {
     nodeEnv: process.env.NODE_ENV,
     isDev: process.env.NODE_ENV === 'development',
@@ -513,7 +509,7 @@ var Me = async (r, e = {}, t) => {
     let {helmet: o} = e;
     if (o) {
       let s = (await import('helmet')).default;
-      r.use(s(d(o) === 'object' ? o : void 0));
+      r.use(s(f(o) === 'object' ? o : void 0));
     }
     r.use(F({filter: (s, n) => (n.getHeader('Content-Type') === 'text/event-stream' ? !1 : F.filter(s, n))}));
   },
@@ -530,63 +526,63 @@ var Me = async (r, e = {}, t) => {
       }),
     );
   },
-  Ce = (r, e = {}, t) => {
+  Ce = (r, e = {}, t, o) => {
     r.use(
       e.apiPrefix,
       Le({
-        keyGenerator: s => Oe(s.ip) || s.headers['x-huxy-auth'] || s.headers['x-api-key'] || s.headers.authorization,
+        keyGenerator: n => Oe(n.ip) || n.headers['x-huxy-auth'] || n.headers['x-api-key'] || n.headers.authorization,
         ...e.rateLimit,
       }),
     );
-    let o = C(e);
-    (o.length && z(r, {...e, proxyList: o}, t),
+    let s = C(e);
+    (s.length && z(r, {...e, proxyList: s}, t, o),
       r.use(x.json({limit: '20mb'})),
       r.use(x.urlencoded({extended: !0, limit: '20mb'})));
   },
   Ne = (r, e = {}, t, o) => {
-    (o && H(r, e), r.use(G(e)), r.use(I(e, t)), r.use($(e, t)));
+    (o && R(r, e), r.use(G(e)), r.use(I(e, t)), r.use($(e, t)));
   },
   Ue =
     r =>
     async (e = {}, t) => {
       let {logger: o, ...s} = w({...K, ...e}),
         n = o ?? (await A(s.loggerConfig, s.nodeEnv)),
-        {host: i, port: c, ssl: a} = s;
+        {host: i, port: a, ssl: c} = s;
       ((!i || i === '::') && (s.host = 'localhost'),
-        (await T(c)) ||
-          ((s.port = Number(c) + 1),
-          n.warn(`\u7AEF\u53E3 ${c} \u5DF2\u88AB\u5360\u7528\uFF0C\u73B0\u5728\u4F7F\u7528\u7AEF\u53E3 ${s.port}`)));
+        (await T(a)) ||
+          ((s.port = Number(a) + 1),
+          n.warn(`\u7AEF\u53E3 ${a} \u5DF2\u88AB\u5360\u7528\uFF0C\u73B0\u5728\u4F7F\u7528\u7AEF\u53E3 ${s.port}`)));
       let u = x();
       await Me(u, s, n);
-      let p;
-      a ?
-        (d(a) === 'object' ||
+      let l;
+      c ?
+        (f(c) === 'object' ||
           (n.error(
             {ssl: {key: '/path/to/name.key', cert: '/path/to/name.pem'}},
             '\u26A0\uFE0F \u8BF7\u8BBE\u7F6E\u6709\u6548 SSL \u6216\u8BBE\u7F6E {ssl: false}',
           ),
           process.exit(1)),
         (s.protocol = 'https'),
-        (p = ke.createServer(a, u)),
+        (l = ke.createServer(c, u)),
         V((g, v) => {
           (v.writeHead(301, {Location: `${s.protocol}://${g.headers.host}${g.url}`}), v.end());
         }).listen(80))
-      : (p = V(u));
-      let {basicAuth: f} = s;
-      (d(f) === 'object' && (await k(f, u)), r && _e(u, s), Ce(u, s, n));
+      : (l = V(u));
+      let {basicAuth: d} = s;
+      (f(d) === 'object' && (await k(d, u)), r && _e(u, s), Ce(u, s, n, l));
       let {cors: Q, helmet: De, rateLimit: We, ...h} = s;
       try {
-        await t?.(h, u, p, n);
+        await t?.(h, u, l, n);
       } catch (y) {
         (n.error({err: y}, `\u274C \u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${y.message}`), process.exit(1));
       }
       Ne(u, h, n, r);
       try {
-        (await P(p, h), E(h, n));
+        (await S(l, h), E(h, n));
       } catch (y) {
         (n.error({err: y}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25\uFF01'), process.exit(1));
       }
-      return (S(p, h, n), {config: h, app: u, httpServer: p, logger: n});
+      return (P(l, h, n), {config: h, app: u, httpServer: l, logger: n});
     },
   X = Ue;
 var J = X,
