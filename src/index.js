@@ -1,81 +1,81 @@
 var Y = Object.defineProperty;
-var Z = (r, e, t) => () => {
-  if (t) throw t[0];
+var Z = (e, t, r) => () => {
+  if (r) throw r[0];
   try {
-    return (r && (e = r((r = 0))), e);
+    return (e && (t = e((e = 0))), t);
   } catch (o) {
-    throw ((t = [o]), o);
+    throw ((r = [o]), o);
   }
 };
-var q = (r, e) => {
-  for (var t in e) Y(r, t, {get: e[t], enumerable: !0});
+var q = (e, t) => {
+  for (var r in t) Y(e, r, {get: t[r], enumerable: !0});
 };
-var L = {};
-q(L, {basicAuth: () => b, default: () => xe});
+var k = {};
+q(k, {basicAuth: () => L, default: () => ye});
 import {timingSafeEqual as j} from 'node:crypto';
 var he,
+  ge,
+  L,
   ye,
-  b,
-  xe,
   O = Z(() => {
-    ((he = (r, e) => {
-      let t = Buffer.from(r ?? '', 'utf8'),
-        o = Buffer.from(e ?? '', 'utf8');
-      return t.length !== o.length ? (j(t, Buffer.alloc(t.length)), !1) : j(t, o);
+    ((he = (e, t) => {
+      let r = Buffer.from(e ?? '', 'utf8'),
+        o = Buffer.from(t ?? '', 'utf8');
+      return r.length !== o.length ? (j(r, Buffer.alloc(r.length)), !1) : j(r, o);
     }),
-      (ye = r => {
-        if (!r?.startsWith('Basic ')) return null;
-        let e = Buffer.from(r.slice(6), 'base64').toString('utf8'),
-          t = e.indexOf(':');
-        return t === -1 ? null : {username: e.slice(0, t), password: e.slice(t + 1)};
+      (ge = e => {
+        if (!e?.startsWith('Basic ')) return null;
+        let t = Buffer.from(e.slice(6), 'base64').toString('utf8'),
+          r = t.indexOf(':');
+        return r === -1 ? null : {username: t.slice(0, r), password: t.slice(r + 1)};
       }),
-      (b = ({realm: r = 'Restricted', users: e, authorize: t, skip: o, unauthorizedResponse: s} = {}) => {
-        let n = c =>
-            typeof o == 'function' ? o(c)
-            : o instanceof RegExp ? o.test(c.path)
-            : Array.isArray(o) ? o.includes(c.path)
+      (L = ({realm: e = 'Restricted', users: t, authorize: r, skip: o, unauthorizedResponse: s} = {}) => {
+        let n = a =>
+            typeof o == 'function' ? o(a)
+            : o instanceof RegExp ? o.test(a.path)
+            : Array.isArray(o) ? o.includes(a.path)
             : !1,
-          i = (c, u, l) => {
-            if (typeof t == 'function') return t(c, u, l);
-            if (e) {
-              let p = e[c];
+          i = (a, u, l) => {
+            if (typeof r == 'function') return r(a, u, l);
+            if (t) {
+              let p = t[a];
               return p !== void 0 && he(u, p);
             }
             return !1;
           },
-          a = (c, u) => {
-            c.set('WWW-Authenticate', `Basic realm="${r}", charset="UTF-8"`);
+          c = (a, u) => {
+            a.set('WWW-Authenticate', `Basic realm="${e}", charset="UTF-8"`);
             let l = typeof s == 'function' ? s(u) : void 0;
-            c.status(401).send(l);
+            a.status(401).send(l);
           };
-        return async (c, u, l) => {
-          if (n(c)) return l();
-          let p = c.headers['proxy-authorization'] || c.headers.authorization,
-            h = ye(p);
-          if (!h) return a(u, c);
+        return async (a, u, l) => {
+          if (n(a)) return l();
+          let p = a.headers['proxy-authorization'] || a.headers.authorization,
+            h = ge(p);
+          if (!h) return c(u, a);
           try {
-            if (!(await i(h.username, h.password, c))) return a(u, c);
-            ((c.basicAuthInfo = {username: h.username}), l());
+            if (!(await i(h.username, h.password, a))) return c(u, a);
+            ((a.basicAuthInfo = {username: h.username}), l());
           } catch {
             u.status(500).end();
           }
         };
       }),
-      (xe = b));
+      (ye = L));
   });
-import x from 'express';
-import be from 'cors';
-import {rateLimit as Le, ipKeyGenerator as Oe} from 'express-rate-limit';
+import y from 'express';
+import Le from 'cors';
+import {rateLimit as ke, ipKeyGenerator as Oe} from 'express-rate-limit';
 import F from 'compression';
 import {createServer as V} from 'node:http';
-import ke from 'node:https';
-var ee = async (r = {}, e) => {
-    let t = (await import('pino')).default,
-      o = e === 'development',
-      s = t({
+import Re from 'node:https';
+var ee = async (e = {}, t) => {
+    let r = (await import('pino')).default,
+      o = t === 'development',
+      s = r({
         name: 'Huxy',
         level: 'info',
-        timestamp: t.stdTimeFunctions.isoTime,
+        timestamp: r.stdTimeFunctions.isoTime,
         base: o ? void 0 : {},
         redact: {
           paths: [
@@ -94,30 +94,30 @@ var ee = async (r = {}, e) => {
               options: {colorize: !0, translateTime: 'SYS:yyyy-mm-dd HH:MM:ss', ignore: 'pid,hostname,name'},
             }
           : void 0,
-        ...r,
+        ...e,
       });
     return ((s.isPino = !0), s);
   },
   A = ee;
 import te from 'node:os';
 import re from 'node:net';
-var m = (r = new Date()) => r.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
-  d = r => Object.prototype.toString.call(r).slice(8, -1).toLowerCase(),
-  oe = r => {
-    let e = r ? 'https' : 'http',
-      t = te.networkInterfaces(),
+var m = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
+  d = e => Object.prototype.toString.call(e).slice(8, -1).toLowerCase(),
+  oe = e => {
+    let t = e ? 'https' : 'http',
+      r = te.networkInterfaces(),
       o = [];
-    return (Object.keys(t).map(n => o.push(...t[n])), o.filter(n => n.family === 'IPv4').map(n => n.address));
+    return (Object.keys(r).map(n => o.push(...r[n])), o.filter(n => n.family === 'IPv4').map(n => n.address));
   },
-  se = r => {
-    let e = r ?? process.argv.slice(2) ?? [],
-      t = {};
+  se = e => {
+    let t = e ?? process.argv.slice(2) ?? [],
+      r = {};
     return (
-      e.map(o => {
+      t.map(o => {
         let [s, n] = o.split('=');
-        t[s] = n;
+        r[s] = n;
       }),
-      t
+      r
     );
   },
   ne = {
@@ -134,38 +134,38 @@ var m = (r = new Date()) => r.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
     JWT_SECRET: 'secret',
     AUTH_TOKEN: 'authToken',
   },
-  ie = (r, e, t) => {
-    let [o, s] = r.split('.');
-    o && s ? (t[o] || (t[o] = {}), (t[o][s] = e)) : (t[o] = e);
+  ie = (e, t, r) => {
+    let [o, s] = e.split('.');
+    o && s ? (r[o] || (r[o] = {}), (r[o][s] = t)) : (r[o] = t);
   },
-  ae = r => {
-    let {connectSrc: e, ...t} = r;
-    if (!e) return t;
-    (t.helmet.contentSecurityPolicy || (t.helmet.contentSecurityPolicy = {}),
-      t.helmet.contentSecurityPolicy.directives || (t.helmet.contentSecurityPolicy.directives = {}));
+  ae = e => {
+    let {connectSrc: t, ...r} = e;
+    if (!t) return r;
+    (r.helmet.contentSecurityPolicy || (r.helmet.contentSecurityPolicy = {}),
+      r.helmet.contentSecurityPolicy.directives || (r.helmet.contentSecurityPolicy.directives = {}));
     let o =
-      typeof e == 'string' ? e.split(',').map(s => s.trim())
-      : Array.isArray(e) ? e
+      typeof t == 'string' ? t.split(',').map(s => s.trim())
+      : Array.isArray(t) ? t
       : [];
     return (
-      (t.helmet.contentSecurityPolicy.directives.connectSrc = [
-        ...t.helmet.contentSecurityPolicy.directives.connectSrc,
+      (r.helmet.contentSecurityPolicy.directives.connectSrc = [
+        ...r.helmet.contentSecurityPolicy.directives.connectSrc,
         ...o,
       ]),
-      t
+      r
     );
   },
-  ce = r =>
-    (r || '').length < 2 ? '/'
-    : r.endsWith('/') ? r.slice(0, -1)
-    : r,
-  w = (r = {}, e = ne) => {
-    let {env: t} = process;
-    Object.keys(e).map(s => {
-      let n = t[s] ?? r[s];
-      n && ie(e[s], n, r);
+  ce = e =>
+    (e || '').length < 2 ? '/'
+    : e.endsWith('/') ? e.slice(0, -1)
+    : e,
+  w = (e = {}, t = ne) => {
+    let {env: r} = process;
+    Object.keys(t).map(s => {
+      let n = r[s] ?? e[s];
+      n && ie(t[s], n, e);
     });
-    let o = {...r, ...se()};
+    let o = {...e, ...se()};
     return (
       (o.port = o.staticPort || o.port),
       (o.isDev = o.nodeEnv === 'development'),
@@ -174,68 +174,68 @@ var m = (r = new Date()) => r.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
       ae(o)
     );
   },
-  S = r =>
-    new Promise(e => {
-      let t = re.createServer();
-      (t.once('error', o => {
-        (t.close(), e((o.code === 'EADDRINUSE', !1)));
+  S = e =>
+    new Promise(t => {
+      let r = re.createServer();
+      (r.once('error', o => {
+        (r.close(), t((o.code === 'EADDRINUSE', !1)));
       }),
-        t.once('listening', () => {
-          (t.close(), e(!0));
+        r.once('listening', () => {
+          (r.close(), t(!0));
         }),
-        t.listen(Number(r)));
+        r.listen(Number(e)));
     }),
-  T = (r, e = {}, t) => {
+  T = (e, t = {}, r) => {
     let o = s => {
-      (t.warn(`\u6536\u5230 ${s} \u4FE1\u53F7, \u{1F6D1} \u6B63\u5728\u5173\u95ED\u670D\u52A1\u5668...`),
-        r.close(async () => {
-          (t.info('\u{1F44B} \u670D\u52A1\u5668\u5DF2\u5173\u95ED'), await e.shutdown?.(), process.exit(0));
+      (r.warn(`\u6536\u5230 ${s} \u4FE1\u53F7, \u{1F6D1} \u6B63\u5728\u5173\u95ED\u670D\u52A1\u5668...`),
+        e.close(async () => {
+          (r.info('\u{1F44B} \u670D\u52A1\u5668\u5DF2\u5173\u95ED'), await t.shutdown?.(), process.exit(0));
         }),
         setTimeout(() => {
-          (t.error('\u274C \u5F3A\u5236\u5173\u95ED\u670D\u52A1\u5668'), process.exit(1));
+          (r.error('\u274C \u5F3A\u5236\u5173\u95ED\u670D\u52A1\u5668'), process.exit(1));
         }, 3e3));
     };
     (process.on('SIGTERM', () => o('SIGTERM')),
       process.on('SIGINT', () => o('SIGINT')),
       process.on('uncaughtException', s => {
-        (t.fatal(s, `\u{1F4A5} \u672A\u6355\u83B7\u7684\u5F02\u5E38: ${s.message}`), process.exit(1));
+        (r.fatal(s, `\u{1F4A5} \u672A\u6355\u83B7\u7684\u5F02\u5E38: ${s.message}`), process.exit(1));
       }),
       process.on('unhandledRejection', (s, n) => {
-        (t.fatal({reason: s, promise: n}, '\u26A0\uFE0F \u672A\u5904\u7406\u7684 Promise \u62D2\u7EDD'),
+        (r.fatal({reason: s, promise: n}, '\u26A0\uFE0F \u672A\u5904\u7406\u7684 Promise \u62D2\u7EDD'),
           process.exit(1));
       }));
   },
-  P = (r, {port: e = 3e3, host: t} = {}) =>
+  P = (e, {port: t = 3e3, host: r} = {}) =>
     new Promise((o, s) => {
-      (r.once('error', s), r.once('listening', () => o(r)), r.listen(e, t));
+      (e.once('error', s), e.once('listening', () => o(e)), e.listen(t, r));
     }),
-  ue = (r, e = 56) => {
-    let t = r.length,
-      o = e - t,
+  ue = (e, t = 56) => {
+    let r = e.length,
+      o = t - r,
       s = ~~(o / 2);
-    return `${'-'.repeat(s)}${r}${'-'.repeat(o - s)}`;
+    return `${'-'.repeat(s)}${e}${'-'.repeat(o - s)}`;
   },
-  E = (r = {}, e) => {
-    let {port: t, host: o, basepath: s, appName: n = 'HuxyServer', protocol: i, serverLogger: a} = r;
-    if (typeof a == 'function') return a(r, e);
-    let c = o || 'localhost',
+  E = (e = {}, t) => {
+    let {port: r, host: o, basepath: s, appName: n = 'HuxyServer', protocol: i, serverLogger: c} = e;
+    if (typeof c == 'function') return c(e, t);
+    let a = o || 'localhost',
       u = oe()
-        .filter(l => l !== c)
-        .map(l => `${i}://${l}:${t}${s}`);
-    (e.info(ue(n)),
-      e.info(`\u{1F680} \u670D\u52A1\u6B63\u5728\u8FD0\u884C: ${i}://${c}:${t}${s}`),
-      e.info(`-----------------[${m()}]------------------`),
-      e.info({ips: u}, '\u672C\u5730\u5730\u5740'));
+        .filter(l => l !== a)
+        .map(l => `${i}://${l}:${r}${s}`);
+    (t.info(ue(n)),
+      t.info(`\u{1F680} \u670D\u52A1\u6B63\u5728\u8FD0\u884C: ${i}://${a}:${r}${s}`),
+      t.info(`-----------------[${m()}]------------------`),
+      t.info({ips: u}, '\u672C\u5730\u5730\u5740'));
   };
-var I = (r, e) => (t, o, s) => {
-    (e.error(
+var I = (e, t) => (r, o, s) => {
+    (t.error(
       {
         message: 'Not Found',
         timestamp: m(),
-        url: t.originalUrl,
-        method: t.method,
-        ip: t.ip,
-        userAgent: t.get('User-Agent'),
+        url: r.originalUrl,
+        method: r.method,
+        ip: r.ip,
+        userAgent: r.get('User-Agent'),
       },
       '\u627E\u4E0D\u5230\u8DEF\u5F84',
     ),
@@ -244,136 +244,136 @@ var I = (r, e) => (t, o, s) => {
         .json({
           success: !1,
           status: 404,
-          url: t.originalUrl,
-          message: `\u8DEF\u7531 [${t.method} ${t.originalUrl}] \u4E0D\u5B58\u5728`,
+          url: r.originalUrl,
+          message: `\u8DEF\u7531 [${r.method} ${r.originalUrl}] \u4E0D\u5B58\u5728`,
           timestamp: m(),
         }));
   },
-  $ = (r, e) => (t, o, s, n) => {
-    let i = t.status || 500,
-      a = t.message,
-      c = '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF';
-    (e.error(
+  $ = (e, t) => (r, o, s, n) => {
+    let i = r.status || 500,
+      c = r.message,
+      a = '\u670D\u52A1\u5668\u5185\u90E8\u9519\u8BEF';
+    (t.error(
       {
-        message: a,
+        message: c,
         timestamp: m(),
-        stack: t.stack,
+        stack: r.stack,
         url: o.originalUrl,
         method: o.method,
         ip: o.ip,
         userAgent: o.get('User-Agent'),
       },
-      c,
+      a,
     ),
-      s.status(i).json({success: !1, message: r.isDev ? a : c, stack: r.isDev ? t.stack : void 0, timestamp: m()}));
+      s.status(i).json({success: !1, message: e.isDev ? c : a, stack: e.isDev ? r.stack : void 0, timestamp: m()}));
   };
 import {fileURLToPath as le} from 'node:url';
 import {dirname as pe, resolve as me} from 'node:path';
 var de =
-    (r = import.meta.url) =>
-    (...e) =>
-      me(pe(le(r)), ...e),
+    (e = import.meta.url) =>
+    (...t) =>
+      me(pe(le(e)), ...t),
   H = de;
 var fe = H(import.meta.url),
-  R = (r, {basepath: e, buildPath: t} = {}) => {
-    e !== '/' &&
-      r.get(e, (s, n, i) => {
-        n.redirect(308, `${e}/${s.search ?? ''}`);
+  b = (e, {basepath: t, buildPath: r} = {}) => {
+    t !== '/' &&
+      e.get(t, (s, n, i) => {
+        n.redirect(308, `${t}/${s.search ?? ''}`);
       });
-    let o = e === '/' ? e : `${e}/`;
-    r.get(`${o}{*splat}`, (s, n, i) => {
+    let o = t === '/' ? t : `${t}/`;
+    e.get(`${o}{*splat}`, (s, n, i) => {
       if (n.headersSent) return i();
-      n.sendFile(fe(t, 'index.html'));
+      n.sendFile(fe(r, 'index.html'));
     });
   };
-var ge = async (r, e) => {
-    let t = (await Promise.resolve().then(() => (O(), L))).default;
-    e.use(
-      t({
+var xe = async (e, t) => {
+    let r = (await Promise.resolve().then(() => (O(), k))).default;
+    t.use(
+      r({
         realm: 'Ihuxy Team',
         unauthorizedResponse: o => ({
           message: '\u672A\u6388\u6743\uFF0C\u8BF7\u8054\u7CFB Ihuxy \u5DE5\u4F5C\u5BA4\uFF01ah.yiru@gmail.com',
         }),
         users: {ihuxy: '123456'},
-        ...r,
+        ...e,
       }),
     );
   },
-  k = ge;
+  R = xe;
 import {createProxyMiddleware as Pe} from 'http-proxy-middleware';
 import ve from 'jsonwebtoken';
-var M = (r, {secret: e = '', ...t} = {}) => ve.verify(r, e, t);
+var M = (e, {secret: t = '', ...r} = {}) => ve.verify(e, t, r);
 var _ =
-  (r = {}) =>
-  (e, t, o) => {
-    let s = e.headers.authorization;
+  (e = {}) =>
+  (t, r, o) => {
+    let s = t.headers.authorization;
     if (!s)
       return (
-        e.log.error('\u8BA4\u8BC1\u5931\u8D25: \u7F3A\u5C11\u8BA4\u8BC1\u4FE1\u606F'),
-        t.status(401).json({message: '\u7F3A\u5C11\u8BA4\u8BC1\u4FE1\u606F'})
+        t.log.error('\u8BA4\u8BC1\u5931\u8D25: \u7F3A\u5C11\u8BA4\u8BC1\u4FE1\u606F'),
+        r.status(401).json({message: '\u7F3A\u5C11\u8BA4\u8BC1\u4FE1\u606F'})
       );
     if (!s.startsWith('Bearer '))
       return (
-        e.log.error('\u8BA4\u8BC1\u5931\u8D25: \u672A\u63D0\u4F9B\u6709\u6548\u8BA4\u8BC1\u4FE1\u606F'),
-        t.status(401).json({message: '\u672A\u63D0\u4F9B\u6709\u6548\u8BA4\u8BC1\u4FE1\u606F'})
+        t.log.error('\u8BA4\u8BC1\u5931\u8D25: \u672A\u63D0\u4F9B\u6709\u6548\u8BA4\u8BC1\u4FE1\u606F'),
+        r.status(401).json({message: '\u672A\u63D0\u4F9B\u6709\u6548\u8BA4\u8BC1\u4FE1\u606F'})
       );
     let n = s.split(' ')[1];
     if (!n)
       return (
-        e.log.error('\u8BA4\u8BC1\u5931\u8D25: \u8BBF\u95EE\u4EE4\u724C\u7F3A\u5931'),
-        t.status(401).json({message: '\u8BBF\u95EE\u4EE4\u724C\u7F3A\u5931'})
+        t.log.error('\u8BA4\u8BC1\u5931\u8D25: \u8BBF\u95EE\u4EE4\u724C\u7F3A\u5931'),
+        r.status(401).json({message: '\u8BBF\u95EE\u4EE4\u724C\u7F3A\u5931'})
       );
     try {
-      let i = M(n, r);
-      (e.log.info(i, '\u8BA4\u8BC1\u6210\u529F'), (e.user = i), o());
+      let i = M(n, e);
+      (t.log.info(i, '\u8BA4\u8BC1\u6210\u529F'), (t.user = i), o());
     } catch (i) {
-      let a = i.type || i.name;
+      let c = i.type || i.name;
       return (
-        a === 'TokenExpiredError' ?
-          (e.log.error({ip: e.ip}, '\u8BA4\u8BC1\u5931\u8D25: \u4EE4\u724C\u5DF2\u8FC7\u671F'),
-          t.status(401).json({message: '\u4EE4\u724C\u5DF2\u8FC7\u671F'}))
-        : a === 'JsonWebTokenError' ?
-          (e.log.error({ip: e.ip}, '\u8BA4\u8BC1\u5931\u8D25: \u65E0\u6548\u7684\u4EE4\u724C'),
-          t.status(403).json({message: '\u65E0\u6548\u7684\u4EE4\u724C'}))
-        : a === 'AuthorizationError' ?
-          (e.log.error({ip: e.ip}, `\u8BA4\u8BC1\u5931\u8D25: ${i.message}`),
-          t.status(i.status).json({message: i.message}))
-        : (e.log.error({err: i, ip: e.ip}, '\u8BA4\u8BC1\u5931\u8D25: \u5185\u90E8\u670D\u52A1\u5668\u9519\u8BEF'),
-          t.status(500).json({message: '\u5185\u90E8\u670D\u52A1\u5668\u9519\u8BEF'}))
+        c === 'TokenExpiredError' ?
+          (t.log.error({ip: t.ip}, '\u8BA4\u8BC1\u5931\u8D25: \u4EE4\u724C\u5DF2\u8FC7\u671F'),
+          r.status(401).json({message: '\u4EE4\u724C\u5DF2\u8FC7\u671F'}))
+        : c === 'JsonWebTokenError' ?
+          (t.log.error({ip: t.ip}, '\u8BA4\u8BC1\u5931\u8D25: \u65E0\u6548\u7684\u4EE4\u724C'),
+          r.status(403).json({message: '\u65E0\u6548\u7684\u4EE4\u724C'}))
+        : c === 'AuthorizationError' ?
+          (t.log.error({ip: t.ip}, `\u8BA4\u8BC1\u5931\u8D25: ${i.message}`),
+          r.status(i.status).json({message: i.message}))
+        : (t.log.error({err: i, ip: t.ip}, '\u8BA4\u8BC1\u5931\u8D25: \u5185\u90E8\u670D\u52A1\u5668\u9519\u8BEF'),
+          r.status(500).json({message: '\u5185\u90E8\u670D\u52A1\u5668\u9519\u8BEF'}))
       );
     }
   };
-var Ae = r =>
-    d(r) === 'object' ? [r]
-    : Array.isArray(r) ? r
+var Ae = e =>
+    d(e) === 'object' ? [e]
+    : Array.isArray(e) ? e
     : [],
-  C = ({proxys: r = [], apiPrefix: e = '/'} = {}) =>
-    Ae(r).map(t => ((t.prefix = `${e}${t.prefix ?? (t.name ? `/${t.name}` : '')}`.replace('//', '/')), t)),
-  N = r => (Array.isArray(r) ? r : []).filter(Boolean),
-  U = (r, e) =>
-    [...new Set(['/', '/health', e, ...(Array.isArray(r) ? r : [])])]
+  C = ({proxys: e = [], apiPrefix: t = '/'} = {}) =>
+    Ae(e).map(r => ((r.prefix = `${t}${r.prefix ?? (r.name ? `/${r.name}` : '')}`.replace('//', '/')), r)),
+  N = e => (Array.isArray(e) ? e : []).filter(Boolean),
+  U = (e, t) =>
+    [...new Set(['/', '/health', t, ...(Array.isArray(e) ? e : [])])]
       .filter(Boolean)
-      .map(t => `${e}${t}`.replace('//', '/'));
+      .map(r => `${t}${r}`.replace('//', '/'));
 var we =
-    (r = {}) =>
-    (e, t, o) => {
-      if (e.method === 'OPTIONS') return o();
-      let s = N(r.whiteAuthKeys);
-      if (U(r.whitePathList, r.apiPrefix).includes(e.path)) return o();
-      let {authToken: i, jwtConfig: a} = r;
+    (e = {}) =>
+    (t, r, o) => {
+      if (t.method === 'OPTIONS') return o();
+      let s = N(e.whiteAuthKeys);
+      if (U(e.whitePathList, e.apiPrefix).includes(t.path)) return o();
+      let {authToken: i, jwtConfig: c} = e;
       if (typeof i == 'string' && i.length > 0 && i !== 'false') {
-        let u = e.headers,
+        let u = t.headers,
           l = u['x-huxy-auth'] || u['x-api-key'] || u.authorization || '',
-          p = e.query.token || l.split('Bearer ')[1];
+          p = t.query.token || l.split('Bearer ')[1];
         return (p && p === i) || s.includes(p) ?
             o()
-          : (e.log.error('\u8BA4\u8BC1\u5931\u8D25: \u65E0\u6548\u7684\u4EE4\u724C'),
-            t.status(403).json({message: '\u65E0\u6548\u7684\u4EE4\u724C'}));
+          : (t.log.error('\u8BA4\u8BC1\u5931\u8D25: \u65E0\u6548\u7684\u4EE4\u724C'),
+            r.status(403).json({message: '\u65E0\u6548\u7684\u4EE4\u724C'}));
       }
-      if (d(a) === 'object') return _({secret, expiresIn, algorithm, issuer})(e, t, o);
+      if (d(c) === 'object') return _({secret, expiresIn, algorithm, issuer})(t, r, o);
       o();
     },
-  B = we;
+  W = we;
 var Se = [
     'origin',
     'referer',
@@ -385,94 +385,87 @@ var Se = [
     'x-huxy-auth',
   ],
   Te = ['x-powered-by', 'server'],
-  D = (r, e) => {
-    let t = new Headers(r);
-    return (Se.forEach(o => t.delete(o)), t.set('Host', e), t.set('User-Agent', 'IHUXY-API/1.0'), t);
+  B = (e, t) => {
+    (Se.forEach(r => e.removeHeader(r)), e.setHeader('Host', t), e.setHeader('User-Agent', 'IHUXY-API/1.0'));
   },
-  W = r => {
-    let e = new Headers(r);
-    return (
-      Te.forEach(t => e.delete(t)),
-      e.set('Access-Control-Allow-Origin', '*'),
-      e.set('X-Content-Type-Options', 'nosniff'),
-      e.get('content-type')?.includes('text/event-stream') &&
-        ((e['Cache-Control'] = 'no-cache, no-transform'),
-        (e.Connection = 'keep-alive'),
-        (e['X-Accel-Buffering'] = 'no')),
-      e
-    );
+  D = e => {
+    (Te.forEach(t => e.removeHeader(t)),
+      e.setHeader('Access-Control-Allow-Origin', '*'),
+      e.setHeader('X-Content-Type-Options', 'nosniff'),
+      e.getHeader('content-type')?.includes('text/event-stream') &&
+        ((e.headers['Cache-Control'] = 'no-cache, no-transform'),
+        (e.headers.Connection = 'keep-alive'),
+        (e.headers['X-Accel-Buffering'] = 'no')));
   };
-var Ee = (r, e = '/') => {
-    let t = {
+var Ee = (e, t = '/') => {
+    let r = {
       status: 'OK',
-      message: `API \u670D\u52A1\u5668\u8FD0\u884C\u4E2D \u{1F449} ${e}`,
+      message: `API \u670D\u52A1\u5668\u8FD0\u884C\u4E2D \u{1F449} ${t}`,
       timestamp: m(),
       uptime: process.uptime(),
       memoryUsage: process.memoryUsage(),
     };
-    r.get(`${e}/health`.replace('//', '/'), (o, s) => {
-      s.status(200).json(t);
+    e.get(`${t}/health`.replace('//', '/'), (o, s) => {
+      s.status(200).json(r);
     });
   },
-  Ie = ({target: r = 'http://', prefix: e, withPrefix: t, preserve: o = !0, ...s} = {}) => ({
-    target: r,
+  Ie = ({target: e = 'http://', prefix: t, withPrefix: r, preserve: o = !1, ...s} = {}) => ({
+    target: e,
     changeOrigin: !0,
     secure: !1,
     xfwd: !0,
     ws: !0,
-    followRedirects: !0,
     on: {
-      proxyReq: (n, i, a) => {
-        !o && D(n.headers, r);
+      proxyReq: (n, i, c) => {
+        n.removeHeader && !o && B(n, e);
       },
-      proxyRes: (n, i, a) => {
-        !o && W(n.headers);
+      proxyRes: (n, i, c) => {
+        n.removeHeader && !o && D(n);
       },
-      error: (n, i, a) => {
-        i.url.includes('/socket.io') ||
-          i.url.includes('EIO=') ||
-          a.headersSent ||
-          a.status(502).json({error: '\u7F51\u5173\u9519\u8BEF'});
+      error: (n, i, c) => {
+        let a = i.headers.upgrade?.toLowerCase() === 'websocket',
+          u = i.url.includes('/socket.io') || i.url.includes('EIO=');
+        !a && !u && (c.headersSent || c.status(502).json({error: '\u7F51\u5173\u9519\u8BEF'}));
       },
     },
     ...s,
   }),
-  $e = (r, e = {}, t, o) => {
-    let {apiPrefix: s = '/', proxyList: n = []} = e;
-    (t.info(`\u{1F4DD} API \u63A5\u53E3\u5730\u5740: ${e.protocol}://${e.host ?? 'localhost'}:${e.port}${s}`),
-      n.map(({prefix: i, target: a, withPrefix: c = !0, ...u}) => {
-        a = c ? `${a}${i}` : a;
-        let l = Pe(Ie({prefix: i, target: a, withPrefix: c, ...u}));
-        (r.use(i, B(e), l), t.info(`\u2705 \u4EE3\u7406\u4E2D ${i} \u{1F449} ${a}`), o.on('upgrade', l.upgrade));
+  $e = (e, t = {}, r, o) => {
+    let {apiPrefix: s = '/', proxyList: n = []} = t;
+    (r.info(`\u{1F4DD} API \u63A5\u53E3\u5730\u5740: ${t.protocol}://${t.host ?? 'localhost'}:${t.port}${s}`),
+      n.map(({prefix: i, target: c, withPrefix: a = !0, ...u}) => {
+        c = a ? `${c}${i}` : c;
+        let l = Pe(Ie({prefix: i, target: c, withPrefix: a, ...u}));
+        (e.use(i, W(t), l), r.info(`\u2705 \u4EE3\u7406\u4E2D ${i} \u{1F449} ${c}`), o.on('upgrade', l.upgrade));
       }),
-      Ee(r, s));
+      Ee(e, s));
   },
   z = $e;
 import {Router as He} from 'express';
-var Re = r => {
-    let e = He();
+var be = e => {
+    let t = He();
     return (
-      e.use('/health', (t, o) => {
+      t.use('/health', (r, o) => {
         o.status(200).json({
           status: 'OK',
           timestamp: m(),
-          environment: r.nodeEnv,
+          environment: e.nodeEnv,
           uptime: process.uptime(),
           memoryUsage: process.memoryUsage(),
           pid: process.pid,
         });
       }),
-      e.get('/', (t, o) => {
+      t.get('/', (r, o) => {
         o.status(200).json({
           message: 'Node.js \u670D\u52A1\u5668\u8FD0\u884C\u4E2D',
           timestamp: m(),
-          environment: r.nodeEnv,
+          environment: e.nodeEnv,
         });
       }),
-      e
+      t
     );
   },
-  G = Re;
+  G = be;
 var je = {
     nodeEnv: process.env.NODE_ENV,
     isDev: process.env.NODE_ENV === 'development',
@@ -485,15 +478,15 @@ var je = {
     rateLimit: {
       windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '300000', 10),
       limit: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '150', 10),
-      skip: r => {
-        let {path: e, url: t} = r;
+      skip: e => {
+        if (e.headers.upgrade?.toLowerCase() === 'websocket' || e.url.includes('/socket.io') || e.url.includes('EIO='))
+          return !0;
+        let {path: t} = e;
         return !!(
-          t.includes('/socket.io') ||
-          t.includes('EIO=') ||
-          e.startsWith('/static/') ||
-          /\.(css|js|png|jpg|jpeg|gif|ico|svg|woff2?|ttf|eot)$/i.test(e) ||
-          e === '/health' ||
-          e === '/ready'
+          t.startsWith('/static/') ||
+          /\.(css|js|png|jpg|jpeg|gif|ico|svg|woff2?|ttf|eot)$/i.test(t) ||
+          t === '/health' ||
+          t === '/ready'
         );
       },
       message: {message: '\u8BF7\u6C42\u8FC7\u4E8E\u9891\u7E41\uFF0C\u8BF7\u7A0D\u540E\u518D\u8BD5'},
@@ -501,95 +494,95 @@ var je = {
     logLevel: process.env.LOG_LEVEL || 30,
   },
   K = je;
-var Me = async (r, e = {}, t) => {
-    if ((r.disable('x-powered-by'), r.set('trust proxy', e.trustProxy ?? !0), t.isPino)) {
+var Me = async (e, t = {}, r) => {
+    if ((e.disable('x-powered-by'), e.set('trust proxy', t.trustProxy ?? !0), r.isPino)) {
       let s = (await import('pino-http')).default;
-      r.use(s({logger: t, quietReqLogger: !0, autoLogging: !1, genReqId: !1}));
+      e.use(s({logger: r, quietReqLogger: !0, autoLogging: !1, genReqId: !1}));
     } else
-      r.use((s, n, i) => {
-        ((s.log = t), i());
+      e.use((s, n, i) => {
+        ((s.log = r), i());
       });
-    r.use(be(e.cors));
-    let {helmet: o} = e;
+    e.use(Le(t.cors));
+    let {helmet: o} = t;
     if (o) {
       let s = (await import('helmet')).default;
-      r.use(s(d(o) === 'object' ? o : void 0));
+      e.use(s(d(o) === 'object' ? o : void 0));
     }
-    r.use(F({filter: (s, n) => (n.getHeader('Content-Type') === 'text/event-stream' ? !1 : F.filter(s, n))}));
+    e.use(F({filter: (s, n) => (n.getHeader('Content-Type') === 'text/event-stream' ? !1 : F.filter(s, n))}));
   },
-  _e = (r, e = {}) => {
-    r.use(
-      e.basepath,
-      x.static(e.buildPath, {
+  _e = (e, t = {}) => {
+    e.use(
+      t.basepath,
+      y.static(t.buildPath, {
         immutable: !0,
         maxAge: '1y',
-        setHeaders: (t, o) => {
-          o.endsWith('.html') && t.setHeader('Cache-Control', 'no-cache, must-revalidate');
+        setHeaders: (r, o) => {
+          o.endsWith('.html') && r.setHeader('Cache-Control', 'no-cache, must-revalidate');
         },
-        ...e.staticCache,
+        ...t.staticCache,
       }),
     );
   },
-  Ce = (r, e = {}, t, o) => {
-    r.use(
-      e.apiPrefix,
-      Le({
+  Ce = (e, t = {}, r, o) => {
+    e.use(
+      t.apiPrefix,
+      ke({
         keyGenerator: n => Oe(n.ip) || n.headers['x-huxy-auth'] || n.headers['x-api-key'] || n.headers.authorization,
-        ...e.rateLimit,
+        ...t.rateLimit,
       }),
     );
-    let s = C(e);
-    (s.length && z(r, {...e, proxyList: s}, t, o),
-      r.use(x.json({limit: '20mb'})),
-      r.use(x.urlencoded({extended: !0, limit: '20mb'})));
+    let s = C(t);
+    (s.length && z(e, {...t, proxyList: s}, r, o),
+      e.use(y.json({limit: '20mb'})),
+      e.use(y.urlencoded({extended: !0, limit: '20mb'})));
   },
-  Ne = (r, e = {}, t, o) => {
-    (o && R(r, e), r.use(G(e)), r.use(I(e, t)), r.use($(e, t)));
+  Ne = (e, t = {}, r, o) => {
+    (o && b(e, t), e.use(G(t)), e.use(I(t, r)), e.use($(t, r)));
   },
   Ue =
-    r =>
-    async (e = {}, t) => {
-      let {logger: o, ...s} = w({...K, ...e}),
+    e =>
+    async (t = {}, r) => {
+      let {logger: o, ...s} = w({...K, ...t}),
         n = o ?? (await A(s.loggerConfig, s.nodeEnv)),
-        {port: i, ssl: a} = s;
+        {port: i, ssl: c} = s;
       (await S(i)) ||
         ((s.port = Number(i) + 1),
         n.warn(`\u7AEF\u53E3 ${i} \u5DF2\u88AB\u5360\u7528\uFF0C\u73B0\u5728\u4F7F\u7528\u7AEF\u53E3 ${s.port}`));
-      let u = x();
+      let u = y();
       await Me(u, s, n);
       let l;
-      a ?
-        (d(a) === 'object' ||
+      c ?
+        (d(c) === 'object' ||
           (n.error(
             {ssl: {key: '/path/to/name.key', cert: '/path/to/name.pem'}},
             '\u26A0\uFE0F \u8BF7\u8BBE\u7F6E\u6709\u6548 SSL \u6216\u8BBE\u7F6E {ssl: false}',
           ),
           process.exit(1)),
         (s.protocol = 'https'),
-        (l = ke.createServer(a, u)),
-        V((g, v) => {
-          (v.writeHead(301, {Location: `${s.protocol}://${g.headers.host}${g.url}`}), v.end());
+        (l = Re.createServer(c, u)),
+        V((x, v) => {
+          (v.writeHead(301, {Location: `${s.protocol}://${x.headers.host}${x.url}`}), v.end());
         }).listen(80))
       : (l = V(u));
       let {basicAuth: p} = s;
-      (d(p) === 'object' && (await k(p, u)), r && _e(u, s), Ce(u, s, n, l));
-      let {cors: h, helmet: Q, rateLimit: De, ...f} = s;
+      (d(p) === 'object' && (await R(p, u)), e && _e(u, s), Ce(u, s, n, l));
+      let {cors: h, helmet: Q, rateLimit: Be, ...f} = s;
       try {
-        await t?.(f, u, l, n);
-      } catch (y) {
-        (n.error({err: y}, `\u274C \u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${y.message}`), process.exit(1));
+        await r?.(f, u, l, n);
+      } catch (g) {
+        (n.error({err: g}, `\u274C \u56DE\u8C03\u51FD\u6570\u9519\u8BEF\uFF1A${g.message}`), process.exit(1));
       }
-      Ne(u, f, n, r);
+      Ne(u, f, n, e);
       try {
         (await P(l, f), E(f, n));
-      } catch (y) {
-        (n.error({err: y}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25\uFF01'), process.exit(1));
+      } catch (g) {
+        (n.error({err: g}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25\uFF01'), process.exit(1));
       }
       return (T(l, f, n), {config: f, app: u, httpServer: l, logger: n});
     },
   X = Ue;
 var J = X,
-  Be = J(),
-  Dt = J(!0),
-  Wt = Be;
-export {Wt as default, J as startApp, Be as startServer, Dt as startStatic};
+  We = J(),
+  Bt = J(!0),
+  Dt = We;
+export {Dt as default, J as startApp, We as startServer, Bt as startStatic};
