@@ -103,14 +103,14 @@ var u = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
     });
     let o = {...e, ...J()};
     return (
-      (o.port = o.staticPort || o.port),
+      (o.port = parseInt(o.staticPort || o.port, 10)),
       (o.isDev = o.nodeEnv === 'development'),
       (o.basepath = q(o.basepath)),
       (o.protocol = 'http'),
       Z(o)
     );
   },
-  $ = e =>
+  I = e =>
     new Promise(t => {
       let r = X.createServer();
       (r.once('error', o => {
@@ -121,7 +121,7 @@ var u = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
         }),
         r.listen(Number(e)));
     }),
-  I = (e, t = {}, r) => {
+  $ = (e, t = {}, r) => {
     let o = s => {
       (r.warn(`\u6536\u5230 ${s} \u4FE1\u53F7, \u{1F6D1} \u6B63\u5728\u5173\u95ED\u670D\u52A1\u5668...`),
         e.close(async () => {
@@ -467,7 +467,7 @@ var we = async (e, t = {}, r) => {
     let {logger: s, ...n} = E({...F, ...e}),
       i = s ?? (await T(n.loggerConfig, n.nodeEnv)),
       {port: a, ssl: p} = n;
-    (await $(a)) ||
+    (await I(a)) ||
       ((n.port = Number(a) + 1),
       i.warn(`\u7AEF\u53E3 ${a} \u5DF2\u88AB\u5360\u7528\uFF0C\u73B0\u5728\u4F7F\u7528\u7AEF\u53E3 ${n.port}`));
     let c = g();
@@ -486,7 +486,7 @@ var we = async (e, t = {}, r) => {
         (S.writeHead(301, {Location: `${n.protocol}://${d.headers.host}${d.url}`}), S.end());
       }).listen(80))
     : (m = z(c));
-    let {cors: P, helmet: x, rateLimit: $e, jwtConfig: Ie, ...f} = n;
+    let {cors: P, helmet: x, rateLimit: Ie, jwtConfig: $e, ...f} = n;
     if (v(r))
       try {
         await r(f, c, m, i);
@@ -505,7 +505,7 @@ var we = async (e, t = {}, r) => {
     } catch (d) {
       (i.error({err: d}, '\u26A0\uFE0F \u670D\u52A1\u5668\u542F\u52A8\u5931\u8D25\uFF01'), process.exit(1));
     }
-    return (I(m, f, i), {config: f, app: c, httpServer: m, logger: i});
+    return ($(m, f, i), {config: f, app: c, httpServer: m, logger: i});
   },
   A = Te;
 var Ee = (e, t, r) => A(e, t, r),

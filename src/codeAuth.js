@@ -238,7 +238,7 @@ var B = /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     );
   };
 var P = t => Object.prototype.toString.call(t).slice(8, -1).toLowerCase(),
-  C = t => {
+  z = t => {
     if (!t) return null;
     let e = P(t);
     return (
@@ -277,9 +277,9 @@ var c = (t, e) => process.env[t] ?? e,
     allowedEmails: c('ALLOWED_EMAILS'),
     authpath: '/authCode',
   },
-  z = t => {
+  C = t => {
     let e = {...F, ...t};
-    if (((e.allowedEmails = C(e.allowedEmails)), !e.session?.secret))
+    if (((e.allowedEmails = z(e.allowedEmails)), !e.session?.secret))
       throw new Error('\u8BF7\u914D\u7F6E [session.secret] \uFF01');
     if (!e.mail?.host || !e.mail?.auth)
       throw new Error(
@@ -289,8 +289,9 @@ var c = (t, e) => process.env[t] ?? e,
       throw new Error('\u8BF7\u914D\u7F6E\u56E2\u961F\u8BBF\u95EE\u8005\u90AE\u7BB1 [allowedEmails] \uFF01');
     return e;
   };
-var R = (t, e) => {
-  let o = z(t);
+var R = (t = {}, e) => {
+  if (t.isDev) return;
+  let o = C(t);
   (e.use(x(o.session), v()), e.use(o.authpath, N({extended: !0}), L(o, Z)), e.use(w(o.authpath)));
 };
 export {R as codeAuth};
