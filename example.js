@@ -1,4 +1,4 @@
-import {startServer, startStatic} from './src/index.js';
+import {startServer, startStatic, basicAuth, codeAuth} from './src/index.js';
 
 process.env.NODE_ENV = 'development';
 
@@ -34,6 +34,36 @@ const {app, config, httpServer, logger} = await startServer({
 });
 
 // startStatic
+const codeAuthCfg = {
+  session: {
+    secret: 'auth-secret',
+    maxAge: 30,
+  },
+  code: {
+    ttl: 300000,
+    len: 6,
+    maxAttempts: 5,
+  },
+  mail: {
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {/*mail 配置*/},
+    from: 'XX <xxx@gmail.com>',
+    subject: 'XX 访问验证码',
+  },
+  allowedEmails: ['xxx@gmail.com'],
+  page: {
+    title: 'XX 团队',
+    tips: '请使用 XX 团队电子邮件登录！',
+    footer: '仅供 XX 团队使用。',
+  },
+};
+const basicAuthCfg = {
+  users: {
+    admin: '123456',
+  },
+};
 const huxyServer = await startStatic({
   port: 9000,
   basepath: '/',
@@ -43,14 +73,9 @@ const huxyServer = await startStatic({
   //   cert: '/path/to/name.pem',
   // },
   buildPath: './build',
-  // basic auth
-  basicAuth: {
-    users: {
-      admin: '123456',
-    },
-  },
-}, (config, app, httpServer, logger) => {
-  logger.info(config);
+}, async (config, app, httpServer, logger) => {
+  await basicAuth(basicAuthCfg, app);
+  codeAuth(codeAuthCfg, app);
 });
 
 // 启动服务可加参数如：node example.js port=8080 或 PORT=8080 node example.js

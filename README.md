@@ -285,25 +285,27 @@ const { app } = await startServer({
 
 ## 📊 API 文档
 
-### `startServer(config, callback)`
+### `startServer(config, afterHandler, beforeHandler)`
 
 启动 Express 服务器
 
 **参数:**
 
 - `config` (Object): 服务器配置对象
-- `callback` (Function): 可选的回调函数，在服务器启动后调用
+- `afterHandler` (Function): 可选的回调函数，在API启动后调用
+- `beforeHandler` (Function): 可选的回调函数，在API启动前调用
 
 **返回:** Promise<{app, config, httpServer}>
 
-### `startStatic(config, callback)`
+### `startStatic(config, afterHandler, beforeHandler)`
 
 启动静态文件服务器
 
 **参数:**
 
 - `config` (Object): 服务器配置对象
-- `callback` (Function): 可选的回调函数，在服务器启动后调用
+- `afterHandler` (Function): 可选的回调函数，在API启动后调用
+- `beforeHandler` (Function): 可选的回调函数，在API启动前调用
 
 **返回:** Promise<{app, config, httpServer}>
 
