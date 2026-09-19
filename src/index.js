@@ -103,7 +103,7 @@ var d = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
     });
     let o = {...e, ...J()};
     return (
-      (o.port = parseInt(o.staticPort || o.port, 10)),
+      (o.port = parseInt(o.staticPort || o.port || 3e3, 10)),
       (o.isDev = o.nodeEnv === 'development'),
       (o.basepath = q(o.basepath)),
       (o.protocol = 'http'),
@@ -119,7 +119,7 @@ var d = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
         r.once('listening', () => {
           (r.close(), t(!0));
         }),
-        r.listen(Number(e)));
+        r.listen(e));
     }),
   $ = (e, t = {}, r) => {
     let o = s => {
@@ -141,7 +141,7 @@ var d = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'
           process.exit(1));
       }));
   },
-  L = (e, {port: t = 3e3, host: r} = {}) =>
+  L = (e, {port: t, host: r} = {}) =>
     new Promise((o, s) => {
       (e.once('error', s), e.once('listening', () => o(e)), e.listen(t, r));
     }),
@@ -276,7 +276,7 @@ var ie = e =>
     [...new Set(['/', '/health', t, ...(Array.isArray(e) ? e : [])])]
       .filter(Boolean)
       .map(r => `${t}${r}`.replace('//', '/'));
-var N =
+var U =
   (e = {}) =>
   (t, r, o) => {
     if (t.method === 'OPTIONS') return o();
@@ -305,7 +305,7 @@ var ae = ['referer', 'x-forwarded-for', 'x-real-ip', 'cf-connecting-ip', 'cf-ipc
     } catch {}
     r && e.setHeader('Origin', r.origin);
   },
-  U = e => {
+  N = e => {
     (ce.forEach(t => delete e.headers[t]),
       (e.headers['Access-Control-Allow-Origin'] = '*'),
       (e.headers['X-Content-Type-Options'] = 'nosniff'),
@@ -340,7 +340,7 @@ var le = (e, t = '/') => {
         n.getHeaders && !o && A(n, e);
       },
       proxyRes: (n, i, a) => {
-        n.headers && !o && U(n, e);
+        n.headers && !o && N(n, e);
       },
       error: (n, i, a) => {
         let p = i.headers.upgrade?.toLowerCase() === 'websocket',
@@ -365,7 +365,7 @@ var le = (e, t = '/') => {
     (n.map(({prefix: m, target: c, withPrefix: l = !0, ...S}) => {
       c = l ? `${c}${m}` : c;
       let y = pe(me({prefix: m, target: c, withPrefix: l, ...S}));
-      (e.use(m, N(t), y), r.info(`\u2705 \u4EE3\u7406\u4E2D ${m} \u{1F449} ${c}`), p.push(y));
+      (e.use(m, U(t), y), r.info(`\u2705 \u4EE3\u7406\u4E2D ${m} \u{1F449} ${c}`), p.push(y));
     }),
       ue(o, p),
       le(e, s));
