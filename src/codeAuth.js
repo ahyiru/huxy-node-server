@@ -1,60 +1,61 @@
-import {urlencoded as P, Router as F} from 'express';
-import O from 'express-session';
-var _ = 1440 * 60 * 1e3,
-  x = ({cookie: t, maxAge: e, ...r} = {}) =>
-    O({
+import {urlencoded as P} from 'express';
+import z from 'express-session';
+var O = 1440 * 60 * 1e3,
+  b = ({cookie: t, maxAge: e, ...r} = {}) =>
+    z({
       secret: '',
       resave: !1,
       saveUninitialized: !1,
-      cookie: {httpOnly: !0, sameSite: 'lax', maxAge: (Number(e) || 30) * _, ...t},
+      cookie: {httpOnly: !0, sameSite: 'lax', maxAge: (Number(e) || 30) * O, ...t},
       ...r,
     }),
-  w = t => (e, r, i) =>
-    e.session?.authorized ? i()
+  x = t => (e, r, a) =>
+    e.session?.authorized || e.trustedAuthHost ? a()
     : e.accepts(['html', 'json']) === 'json' ? r.status(401).json({error: '\u672A\u6388\u6743', redirect: `${t}/email`})
     : r.redirect(`${t}/email`),
-  v =
+  w =
     (t = '_flash') =>
-    (e, r, i) => {
+    (e, r, a) => {
       if (!e.session)
-        return i(new Error('flashMiddleware: express-session is required and must be mounted before flash'));
+        return a(new Error('flashMiddleware: express-session is required and must be mounted before flash'));
       ((e.session[t] = e.session[t] || {}),
-        (e.flash = (s, m) => {
+        (e.flash = (s, n) => {
           if (s === void 0) {
-            let n = e.session[t];
-            return ((e.session[t] = {}), n);
+            let d = e.session[t];
+            return ((e.session[t] = {}), d);
           }
-          if (m === void 0) {
-            let n = e.session[t][s];
-            return (delete e.session[t][s], n ?? '');
+          if (n === void 0) {
+            let d = e.session[t][s];
+            return (delete e.session[t][s], d ?? '');
           }
-          e.session[t][s] = m;
+          e.session[t][s] = n;
         }),
-        i());
+        a());
     };
-var y =
+import {Router as _} from 'express';
+var v =
     ({mailCfg: t, codeCfg: e} = {}) =>
-    async ({email: r, code: i, ...s}) => {
-      let {from: m, subject: n, ...p} = t ?? {},
-        l = (await import('nodemailer')).default.createTransport(p),
-        {ttl: o} = e ?? {};
-      await l.sendMail({
+    async ({email: r, code: a, ...s}) => {
+      let {from: n, subject: d, ...u} = t ?? {},
+        o = (await import('nodemailer')).default.createTransport(u),
+        {ttl: i} = e ?? {};
+      await o.sendMail({
         allowInternalNetworkInterfaces: !0,
         secure: !0,
-        from: m,
+        from: n,
         to: r,
-        subject: n,
-        text: `\u60A8\u7684\u9A8C\u8BC1\u7801\u662F ${i}\uFF0C\u6709\u6548\u671F ${Math.floor(o / 6e4)} \u5206\u949F\u3002\u5982\u975E\u672C\u4EBA\u64CD\u4F5C\u8BF7\u5FFD\u7565\u3002`,
-        html: `<p>\u60A8\u7684\u9A8C\u8BC1\u7801\u662F <b>${i}</b>\uFF0C\u6709\u6548\u671F ${Math.floor(o / 6e4)} \u5206\u949F\u3002</p>`,
+        subject: d,
+        text: `\u60A8\u7684\u9A8C\u8BC1\u7801\u662F ${a}\uFF0C\u6709\u6548\u671F ${Math.floor(i / 6e4)} \u5206\u949F\u3002\u5982\u975E\u672C\u4EBA\u64CD\u4F5C\u8BF7\u5FFD\u7565\u3002`,
+        html: `<p>\u60A8\u7684\u9A8C\u8BC1\u7801\u662F <b>${a}</b>\uFF0C\u6709\u6548\u671F ${Math.floor(i / 6e4)} \u5206\u949F\u3002</p>`,
         ...s,
       });
     },
-  E = ({CODE_LENGTH: t = 6} = {}) => String(Math.floor(Math.random() * 10 ** t)).padStart(t, '0');
-var M = t => {
+  y = ({CODE_LENGTH: t = 6} = {}) => String(Math.floor(Math.random() * 10 ** t)).padStart(t, '0');
+var E = t => {
   let e = new Map();
   return {
-    set: (r, i) => {
-      e.set(r.toLowerCase(), {code: i, expiresAt: Date.now() + t.ttl, attempts: 0});
+    set: (r, a) => {
+      e.set(r.toLowerCase(), {code: a, expiresAt: Date.now() + t.ttl, attempts: 0});
     },
     get: r => e.get(r.toLowerCase()),
     delete: r => e.delete(r.toLowerCase()),
@@ -85,7 +86,7 @@ var h = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 606" width="10
   <g clip-path="url(#c3)"><circle fill="url(#g)" cx="280.81" cy="176" r="176"/></g>
 </g>
 </svg>`;
-var $ = `
+var M = `
 :root {
   --cf: #f6821f;
   --cf-hover: #e07317;
@@ -118,24 +119,24 @@ button[disabled],a[disabled]{cursor: not-allowed;opacity: 0.7}
 .code-input{width:100%;padding:.5rem .75rem;text-align:center;font-size:1.5rem;letter-spacing:.6rem;border:1px solid var(--g300);border-radius:6px;transition:border-color .15s,box-shadow .15s}
 .code-input:focus{outline:none;border-color:var(--cf);box-shadow:0 0 0 3px var(--cf-ring)}
 `,
-  A = (t, {title: e, tips: r, footer: i, logo: s} = {}, m) => (
+  $ = (t, {title: e, tips: r, footer: a, logo: s} = {}, n) => (
     (s =
       s ?
         s.startsWith('https://') || s.startsWith('http://') ?
           `<img src="${s}" alt="logo" />`
         : s
       : h),
-    `<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>\u9A8C\u8BC1\u90AE\u7BB1</title><style>${$}</style></head><body>
+    `<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>\u9A8C\u8BC1\u90AE\u7BB1</title><style>${M}</style></head><body>
 <div class="card">
   <div class="logo">${s}</div>
   <p class="team">${e ?? ''}</p>
   <p class="desc">${r ?? ''}</p>
   ${t ? `<div class="err">${t}</div>` : ''}
-  <form method="post" action="${m}/email" id="emailForm">
+  <form method="post" action="${n}/email" id="emailForm">
     <input class="input" type="email" name="email" placeholder="name@ihuxy.com" required autofocus autocomplete="email">
     <button class="btn" type="submit" id="submitBtn">Send code</button>
   </form>
-  <p class="footer">${i ?? ''}</p>
+  <p class="footer">${a ?? ''}</p>
 </div>
 <script>
 document.getElementById('emailForm').addEventListener('submit', function() {
@@ -146,26 +147,26 @@ document.getElementById('emailForm').addEventListener('submit', function() {
 </script>
 </body></html>`
   ),
-  S = (t, e, {logo: r} = {}, i, {ttl: s = 3e5} = {}) => (
+  A = (t, e, {logo: r} = {}, a, {ttl: s = 3e5} = {}) => (
     (r =
       r ?
         r.startsWith('https://') || r.startsWith('http://') ?
           `<img src="${r}" alt="logo" />`
         : r
       : h),
-    `<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>\u9A8C\u8BC1\u7801</title><style>${$}</style></head><body>
+    `<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>\u9A8C\u8BC1\u7801</title><style>${M}</style></head><body>
 <div class="card">
   <div class="logo">${r}</div>
   <p class="team">\u5DF2\u5411 <strong style="color:var(--g900)">${t}</strong> \u53D1\u9001\u4E86\u9A8C\u8BC1\u7801</p>
   <p class="desc">\u6709\u6548\u671F <strong style="color:var(--cf)">${Math.floor(s / 6e4)}</strong> \u5206\u949F</p>
   ${e ? `<div class="err">${e}</div>` : ''}
-  <form method="post" action="${i}/code" id="codeForm">
+  <form method="post" action="${a}/code" id="codeForm">
     <input class="code-input" type="text" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="6" required autofocus autocomplete="one-time-code">
     <button class="btn" type="submit" id="verifyBtn">\u9A8C\u8BC1</button>
   </form>
   <div class="links">
-    <a href="${i}/email" id="a1">\u66F4\u6539\u90AE\u7BB1</a>
-    <a href="${i}/email" id="a2">\u91CD\u65B0\u53D1\u9001</a>
+    <a href="${a}/email" id="a1">\u66F4\u6539\u90AE\u7BB1</a>
+    <a href="${a}/email" id="a2">\u91CD\u65B0\u53D1\u9001</a>
   </div>
 </div>
 <script>
@@ -184,67 +185,67 @@ document.getElementById('codeForm').addEventListener('submit', function() {
 var B = /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   T =
     t =>
-    (e, r, i, s = 'email') => {
-      (e.flash('error', i), r.redirect(`${t}/${s}`));
+    (e, r, a, s = 'email') => {
+      (e.flash('error', a), r.redirect(`${t}/${s}`));
     },
-  L = ({code: t, mail: e, allowedEmails: r, page: i, authpath: s} = {}, m) => {
-    let n = m(),
-      p = M(t),
-      g = y({mailCfg: e, codeCfg: t}),
-      l = T(s);
+  S = ({code: t, mail: e, allowedEmails: r, page: a, authpath: s} = {}) => {
+    let n = _(),
+      d = E(t),
+      u = v({mailCfg: e, codeCfg: t}),
+      m = T(s);
     return (
-      n.get('/email', (o, a) => {
-        if (o.session.authorized) return a.redirect('/');
-        a.type('html').send(A(o.flash('error'), i, s));
+      n.get('/email', (o, i) => {
+        if (o.session.authorized) return i.redirect('/');
+        i.type('html').send($(o.flash('error'), a, s));
       }),
-      n.post('/email', async (o, a) => {
-        let {email: d} = o.body;
-        if (!B.test(d)) return l(o, a, '\u90AE\u7BB1\u683C\u5F0F\u4E0D\u6B63\u786E');
-        if (!r?.has(d)) return l(o, a, '\u8BE5\u90AE\u7BB1\u65E0\u8BBF\u95EE\u6743\u9650');
-        let f = E();
-        p.set(d, f);
+      n.post('/email', async (o, i) => {
+        let {email: l} = o.body;
+        if (!B.test(l)) return m(o, i, '\u90AE\u7BB1\u683C\u5F0F\u4E0D\u6B63\u786E');
+        if (!r?.has(l)) return m(o, i, '\u8BE5\u90AE\u7BB1\u65E0\u8BBF\u95EE\u6743\u9650');
+        let p = y();
+        d.set(l, p);
         try {
-          await g({email: d, code: f});
+          await u({email: l, code: p});
         } catch {
-          return l(o, a, '\u9A8C\u8BC1\u7801\u53D1\u9001\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5');
+          return m(o, i, '\u9A8C\u8BC1\u7801\u53D1\u9001\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5');
         }
-        ((o.session.pendingEmail = d), await new Promise(u => o.session.save(u)), a.redirect(`${s}/code`));
+        ((o.session.pendingEmail = l), await new Promise(f => o.session.save(f)), i.redirect(`${s}/code`));
       }),
-      n.get('/code', (o, a) => {
+      n.get('/code', (o, i) => {
         if (!o.session.pendingEmail)
-          return l(o, a, '\u8BF7\u5148\u8F93\u5165\u90AE\u7BB1\u83B7\u53D6\u9A8C\u8BC1\u7801');
-        if (o.session.authorized) return a.redirect('/');
-        a.type('html').send(S(o.session.pendingEmail, o.flash('error'), i, s, t));
+          return m(o, i, '\u8BF7\u5148\u8F93\u5165\u90AE\u7BB1\u83B7\u53D6\u9A8C\u8BC1\u7801');
+        if (o.session.authorized) return i.redirect('/');
+        i.type('html').send(A(o.session.pendingEmail, o.flash('error'), a, s, t));
       }),
-      n.post('/code', async (o, a) => {
-        let d = o.session.pendingEmail;
-        if (!d) return l(o, a, '\u4F1A\u8BDD\u5DF2\u8FC7\u671F\uFF0C\u8BF7\u91CD\u65B0\u83B7\u53D6\u9A8C\u8BC1\u7801');
-        let f = p.get(d);
-        if (p.isExpired(f))
-          return (p.delete(d), l(o, a, '\u9A8C\u8BC1\u7801\u5DF2\u8FC7\u671F\uFF0C\u8BF7\u91CD\u65B0\u83B7\u53D6'));
-        if ((f.attempts++, f.attempts > t.maxAttempts))
+      n.post('/code', async (o, i) => {
+        let l = o.session.pendingEmail;
+        if (!l) return m(o, i, '\u4F1A\u8BDD\u5DF2\u8FC7\u671F\uFF0C\u8BF7\u91CD\u65B0\u83B7\u53D6\u9A8C\u8BC1\u7801');
+        let p = d.get(l);
+        if (d.isExpired(p))
+          return (d.delete(l), m(o, i, '\u9A8C\u8BC1\u7801\u5DF2\u8FC7\u671F\uFF0C\u8BF7\u91CD\u65B0\u83B7\u53D6'));
+        if ((p.attempts++, p.attempts > t.maxAttempts))
           return (
-            p.delete(d),
-            l(o, a, '\u5C1D\u8BD5\u6B21\u6570\u8FC7\u591A\uFF0C\u8BF7\u91CD\u65B0\u83B7\u53D6\u9A8C\u8BC1\u7801')
+            d.delete(l),
+            m(o, i, '\u5C1D\u8BD5\u6B21\u6570\u8FC7\u591A\uFF0C\u8BF7\u91CD\u65B0\u83B7\u53D6\u9A8C\u8BC1\u7801')
           );
-        if (f.code !== o.body.code) return l(o, a, '\u9A8C\u8BC1\u7801\u9519\u8BEF', 'code');
-        (p.delete(d),
-          await new Promise((u, z) => {
-            o.session.regenerate(b => {
-              if (b) return z(b);
-              ((o.session.authorized = !0), (o.session.email = d), u());
+        if (p.code !== o.body.code) return m(o, i, '\u9A8C\u8BC1\u7801\u9519\u8BEF', 'code');
+        (d.delete(l),
+          await new Promise((f, C) => {
+            o.session.regenerate(g => {
+              if (g) return C(g);
+              ((o.session.authorized = !0), (o.session.email = l), f());
             });
           }),
-          a.redirect('/'));
+          i.redirect('/'));
       }),
-      n.get('/logout', (o, a) => {
-        o.session.destroy(() => a.redirect(`${s}/email`));
+      n.get('/logout', (o, i) => {
+        o.session.destroy(() => i.redirect(`${s}/email`));
       }),
       n
     );
   };
 var k = t => Object.prototype.toString.call(t).slice(8, -1).toLowerCase(),
-  I = t => {
+  L = t => {
     if (!t) return null;
     let e = k(t);
     return (
@@ -283,9 +284,9 @@ var c = (t, e) => process.env[t] ?? e,
     allowedEmails: c('ALLOWED_EMAILS'),
     authpath: '/authCode',
   },
-  C = t => {
+  I = t => {
     let e = {...N, ...t};
-    if (((e.allowedEmails = I(e.allowedEmails)), !e.session?.secret))
+    if (((e.allowedEmails = L(e.allowedEmails)), !e.session?.secret))
       throw new Error('\u8BF7\u914D\u7F6E [session.secret] \uFF01');
     if (!e.mail?.host || !e.mail?.auth)
       throw new Error(
@@ -295,8 +296,8 @@ var c = (t, e) => process.env[t] ?? e,
       throw new Error('\u8BF7\u914D\u7F6E\u56E2\u961F\u8BBF\u95EE\u8005\u90AE\u7BB1 [allowedEmails] \uFF01');
     return e;
   };
-var Z = (t = {}, e) => {
-  let r = C(t);
-  (e.use(x(r.session), v()), e.use(r.authpath, P({extended: !0}), L(r, F)), e.use(w(r.authpath)));
+var F = (t = {}, e) => {
+  let r = I(t);
+  (e.use(b(r.session), w()), e.use(r.authpath, P({extended: !0}), S(r)), e.use(x(r.authpath)));
 };
-export {Z as codeAuth};
+export {F as codeAuth};

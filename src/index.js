@@ -1,6 +1,6 @@
 import g from 'express';
 import ge from 'cors';
-import {rateLimit as xe, ipKeyGenerator as ye} from 'express-rate-limit';
+import {rateLimit as ye, ipKeyGenerator as xe} from 'express-rate-limit';
 import G from 'compression';
 import {createServer as ve} from 'node:http';
 import we from 'node:https';
@@ -36,9 +36,9 @@ var T = async (e = {}, t) => {
 import B from 'node:os';
 import X from 'node:net';
 var d = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
-  y = e => Object.prototype.toString.call(e).slice(8, -1).toLowerCase(),
-  h = e => y(e) === 'object',
-  v = e => y(e) === 'function' || y(e) === 'asyncfunction',
+  x = e => Object.prototype.toString.call(e).slice(8, -1).toLowerCase(),
+  h = e => x(e) === 'object',
+  v = e => x(e) === 'function' || x(e) === 'asyncfunction',
   V = e => {
     let t = e ? 'https' : 'http',
       r = B.networkInterfaces(),
@@ -364,8 +364,8 @@ var le = (e, t = '/') => {
     let p = [];
     (n.map(({prefix: m, target: c, withPrefix: l = !0, ...S}) => {
       c = l ? `${c}${m}` : c;
-      let x = pe(me({prefix: m, target: c, withPrefix: l, ...S}));
-      (e.use(m, N(t), x), r.info(`\u2705 \u4EE3\u7406\u4E2D ${m} \u{1F449} ${c}`), p.push(x));
+      let y = pe(me({prefix: m, target: c, withPrefix: l, ...S}));
+      (e.use(m, N(t), y), r.info(`\u2705 \u4EE3\u7406\u4E2D ${m} \u{1F449} ${c}`), p.push(y));
     }),
       ue(o, p),
       le(e, s));
@@ -451,10 +451,7 @@ var Ae = async (e, t = {}, r) => {
   Se = (e, t = {}, r, o) => {
     e.use(
       t.apiPrefix,
-      xe({
-        keyGenerator: n => ye(n.ip) || n.headers['x-huxy-auth'] || n.headers['x-api-key'] || n.headers.authorization,
-        ...t.rateLimit,
-      }),
+      ye({keyGenerator: n => xe(n.ip) || n.headers['x-api-key'] || n.headers.authorization, ...t.rateLimit}),
     );
     let s = _(t);
     (s.length && D(e, {...t, proxys: s}, r, o),
@@ -488,7 +485,7 @@ var Ae = async (e, t = {}, r) => {
         z();
       }))
     : (l = ve(c));
-    let {cors: S, helmet: x, rateLimit: $e, jwtConfig: Le, ...f} = n;
+    let {cors: S, helmet: y, rateLimit: $e, jwtConfig: Le, ...f} = n;
     if (v(r))
       try {
         await r(f, c, l, i);
