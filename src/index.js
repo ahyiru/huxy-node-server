@@ -1,6 +1,6 @@
 import g from 'express';
 import ge from 'cors';
-import {rateLimit as ye, ipKeyGenerator as xe} from 'express-rate-limit';
+import {rateLimit as xe, ipKeyGenerator as ye} from 'express-rate-limit';
 import G from 'compression';
 import {createServer as ve} from 'node:http';
 import we from 'node:https';
@@ -36,9 +36,9 @@ var T = async (e = {}, t) => {
 import B from 'node:os';
 import X from 'node:net';
 var d = (e = new Date()) => e.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour12: !1}),
-  x = e => Object.prototype.toString.call(e).slice(8, -1).toLowerCase(),
-  h = e => x(e) === 'object',
-  v = e => x(e) === 'function' || x(e) === 'asyncfunction',
+  y = e => Object.prototype.toString.call(e).slice(8, -1).toLowerCase(),
+  h = e => y(e) === 'object',
+  v = e => y(e) === 'function' || y(e) === 'asyncfunction',
   V = e => {
     let t = e ? 'https' : 'http',
       r = B.networkInterfaces(),
@@ -364,8 +364,8 @@ var le = (e, t = '/') => {
     let p = [];
     (n.map(({prefix: m, target: c, withPrefix: l = !0, ...S}) => {
       c = l ? `${c}${m}` : c;
-      let y = pe(me({prefix: m, target: c, withPrefix: l, ...S}));
-      (e.use(m, N(t), y), r.info(`\u2705 \u4EE3\u7406\u4E2D ${m} \u{1F449} ${c}`), p.push(y));
+      let x = pe(me({prefix: m, target: c, withPrefix: l, ...S}));
+      (e.use(m, N(t), x), r.info(`\u2705 \u4EE3\u7406\u4E2D ${m} \u{1F449} ${c}`), p.push(x));
     }),
       ue(o, p),
       le(e, s));
@@ -405,19 +405,15 @@ var he = {
     whitePathList: ['/health'],
     cors: {origin: process.env.CORS_ORIGIN?.split(',') || '*'},
     rateLimit: {
-      windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '300000', 10),
-      limit: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '200', 10),
-      skip: e => {
-        if (e.headers.upgrade?.toLowerCase() === 'websocket' || e.url.includes('/socket.io') || e.url.includes('EIO='))
-          return !0;
-        let {path: t} = e;
-        return !!(
-          t.startsWith('/static/') ||
-          /\.(css|js|png|jpg|jpeg|gif|ico|svg|woff2?|ttf|eot)$/i.test(t) ||
-          t === '/health' ||
-          t === '/ready'
-        );
-      },
+      windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '600000', 10),
+      limit: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '600', 10),
+      skip: e =>
+        !!(
+          e.headers.upgrade?.toLowerCase() === 'websocket' ||
+          e.url.includes('/socket.io') ||
+          e.url.includes('EIO=') ||
+          /\.(css|js|png|jpg|jpeg|gif|ico|svg|woff2?|ttf|eot)$/i.test(e.path)
+        ),
       message: {message: '\u8BF7\u6C42\u8FC7\u4E8E\u9891\u7E41\uFF0C\u8BF7\u7A0D\u540E\u518D\u8BD5'},
     },
     logLevel: process.env.LOG_LEVEL || 30,
@@ -455,8 +451,8 @@ var Ae = async (e, t = {}, r) => {
   Se = (e, t = {}, r, o) => {
     e.use(
       t.apiPrefix,
-      ye({
-        keyGenerator: n => xe(n.ip) || n.headers['x-huxy-auth'] || n.headers['x-api-key'] || n.headers.authorization,
+      xe({
+        keyGenerator: n => ye(n.ip) || n.headers['x-huxy-auth'] || n.headers['x-api-key'] || n.headers.authorization,
         ...t.rateLimit,
       }),
     );
@@ -492,7 +488,7 @@ var Ae = async (e, t = {}, r) => {
         z();
       }))
     : (l = ve(c));
-    let {cors: S, helmet: y, rateLimit: $e, jwtConfig: Le, ...f} = n;
+    let {cors: S, helmet: x, rateLimit: $e, jwtConfig: Le, ...f} = n;
     if (v(r))
       try {
         await r(f, c, l, i);
